@@ -18,7 +18,7 @@ class Coleccion():
         return canciones
 
     def darCanciones(self):
-        canciones = session.query(Cancion).all()
+        canciones = [elem.__dict__ for elem in session.query(Cancion).all()]
         return canciones
 
     def darInterpretes(self):
@@ -26,12 +26,16 @@ class Coleccion():
         return interpretes
 
     def buscarAlbumesPorTitulo(self, album_titulo):
-        albumes = session.query(Album).filter(Album.titulo.ilike(album_titulo)).all()
+        albumes = [elem.__dict__ for elem in session.query(Album).filter(Album.titulo.ilike('%{0}%'.format(album_titulo))).all()]
         return albumes
 
     def buscarCancionesPorTitulo(self, cancion_titulo):
-        canciones = session.query(Cancion).filter(Cancion.titulo.ilike(cancion_titulo)).all()
+        canciones = session.query(Cancion).filter(Cancion.titulo.ilike('%{0}%'.format(cancion_titulo))).all()
         return canciones
+
+    def buscarInterpretesPorNombre(self, interprete_nombre):
+        interpretes = [elem.__dict__ for elem in session.query(Interprete).filter(Interprete.nombre.ilike('%{0}%'.format(interprete_nombre))).all()]
+        return interpretes
 
     def buscarCancionesPorInterprete(self, nombre):
         canciones = session.query(Cancion).filter(Cancion.interpretes.any(Interprete.nombre.ilike(nombre))).all()

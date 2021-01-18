@@ -45,7 +45,7 @@ class App(QApplication):
 
     def mostrar_ventana_lista_canciones(self):
         self.ventana_lista_canciones.show()
-        self.ventana_lista_canciones.mostrar_canciones(self.coleccion.darCanciones())
+        self.ventana_lista_canciones.mostrar_canciones(self.logica.darCanciones())
 
     def mostrar_ventana_cancion(self, n_cancion):
         self.ventana_cancion.show()
@@ -58,9 +58,10 @@ class App(QApplication):
         self.ventana_lista_interpretes.show()
         self.ventana_lista_interpretes.mostrar_interpretes(self.logica.darInterpretes())
 
-    def mostrar_ventana_interprete(self, interprete):
+    def mostrar_ventana_interprete(self, n_interprete):
         self.ventana_interprete.show()
-        self.ventana_interprete.mostrar_interprete(interprete)
+        print(n_interprete-1)
+        self.ventana_interprete.mostrar_interprete(self.logica.darInterpretes()[n_interprete-1])
 
     def dar_medios(self):
         return ["CD", "Acetato", "Casette"]
@@ -84,7 +85,7 @@ class App(QApplication):
 
     def crear_album(self, nuevo_album):
         self.logica.agregarAlbum(nuevo_album["titulo"], nuevo_album["ano"], nuevo_album["descripcion"], nuevo_album["medio"])
-        self.ventana_lista_album.mostrar_albums(self.mock_albums)
+        self.ventana_lista_album.mostrar_albums(self.logica.darAlbumes())
 
     def guardar_interprete(self, n_interprete, nuevo_interprete):
         self.logica.editarInterprete(n_interprete, nuevo_interprete)
@@ -97,13 +98,22 @@ class App(QApplication):
         self.mostrar_ventana_lista_interpretes()
 
     def crear_interprete(self, nuevo_interprete):
-        
         self.logica.agregarInterprete(nuevo_interprete)
         self.mostrar_ventana_lista_interpretes()
 
     def crear_cancion(self, nueva_cancion):
         self.coleccion.agregarCancion(nueva_cancion["Titulo"],nueva_cancion["Minutos"], nueva_cancion["Segundos"], nueva_cancion["Compositor"], -1, -1)
         
+    def mostrar_resultados_albumes(self, nombre_album):
+        albumes = self.logica.buscarAlbumesPorTitulo(nombre_album)
+        self.ventana_buscar.mostrar_resultados_albumes(albumes)
 
+    def mostrar_resultados_canciones(self, nombre_cancion):
+        canciones = self.logica.buscarCancionesPorTitulo(nombre_cancion)
+        self.ventana_buscar.mostrar_resultados_canciones(canciones)
+
+    def mostrar_resultados_interpretes(self, nombre_interprete):
+        interpretes = self.logica.buscarInterpretesPorNombre(nombre_interprete)
+        self.ventana_buscar.mostrar_resultados_interpretes(interpretes)
 
     

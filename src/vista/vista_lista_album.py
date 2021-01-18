@@ -62,6 +62,7 @@ class Ventana_Lista_Album(QWidget):
         self.limpiar_albums()
         self.botones = []
         for i in range(len(albumes)):
+            print(albumes[i])
             texto_titulo = QLineEdit(albumes[i]["titulo"])
             texto_titulo.setReadOnly(True)
             self.caja_albums.layout().addWidget(texto_titulo,i+1,0)
