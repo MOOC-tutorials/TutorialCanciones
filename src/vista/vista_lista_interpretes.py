@@ -65,14 +65,16 @@ class Ventana_Lista_Interpretes(QWidget):
     def mostrar_interpretes(self, interpretes):
         self.limpiar_interpretes()
         self.botones = []
-        for i in range(len(interpretes)):
-            self.caja_interpretes.layout().addWidget(self.crear_campo_texto(interpretes[i], edit=False),i+1,0)
+        fila = 1
+        for interprete in interpretes:
+            self.caja_interpretes.layout().addWidget(self.crear_campo_texto(interprete["nombre"], edit=False),fila,0)
             self.botones.append(QPushButton("Ver"))
-            self.botones[i].clicked.connect(lambda estado, x=i: self.ver_interprete(x))
-            self.caja_interpretes.layout().addWidget(self.botones[i],i+1,3)
+            self.botones[fila-1].clicked.connect(lambda estado, x=interprete: self.ver_interprete(x))
+            self.caja_interpretes.layout().addWidget(self.botones[fila-1],fila,3)
+            fila+=1
 
-    def ver_interprete(self, n_interprete):
-        self.interfaz.mostrar_ventana_interprete(n_interprete)
+    def ver_interprete(self, interprete):
+        self.interfaz.mostrar_ventana_interprete(interprete)
         self.hide()
 
     def mostrar_dialogo_nuevo_interprete(self):
@@ -80,17 +82,24 @@ class Ventana_Lista_Interpretes(QWidget):
 
         layout = QGridLayout()
         self.dialogo_nuevo_interprete.setLayout(layout)
+        self.dialogo_nuevo_interprete.setFixedSize(400,100)
 
         lab1 = QLabel("Nombre")
         txt1 = QLineEdit()
         layout.addWidget(lab1,0,0)
         layout.addWidget(txt1,0,1)
         
+        widget_botones = QWidget()
+        widget_botones.setFixedHeight(50)
+        widget_botones.setLayout(QGridLayout())
+
         butAceptar = QPushButton("Aceptar")
         butCancelar = QPushButton("Cancelar")
 
-        layout.addWidget(butAceptar,4,0)
-        layout.addWidget(butCancelar,4,1)
+        widget_botones.layout().addWidget(butAceptar,0,0)
+        widget_botones.layout().addWidget(butCancelar,0,1)
+
+        layout.addWidget(widget_botones, 4,0,1,2)
 
         butAceptar.clicked.connect(lambda: self.crear_interprete(txt1.text()))
         butCancelar.clicked.connect(lambda: self.dialogo_nuevo_interprete.close())

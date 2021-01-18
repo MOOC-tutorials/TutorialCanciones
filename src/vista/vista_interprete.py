@@ -38,16 +38,16 @@ class Ventana_Interprete(QWidget):
         self.caja_botones.setLayout(layout_botones)
 
         self.boton_guardar = QPushButton("Guardar datos editados")
-        self.boton_guardar.clicked.connect(lambda: self.interfaz.guardar_interprete(self.interprete_actual, self.texto_interprete.text()))
+        self.boton_guardar.clicked.connect(lambda: self.interfaz.guardar_interprete(self.interprete_actual["id"], self.texto_interprete.text()))
         layout_botones.addWidget(self.boton_guardar)
 
         self.boton_borrar = QPushButton("Borrar")
-        self.boton_borrar.clicked.connect(lambda : self.interfaz.eliminar_interprete(self.interprete_actual))
+        self.boton_borrar.clicked.connect(lambda : self.interfaz.eliminar_interprete(self.interprete_actual["id"]))
         layout_botones.addWidget(self.boton_borrar)
 
         self.distr_interprete.addWidget(self.caja_datos)
         self.distr_interprete.addWidget(self.caja_botones)
 
-    def mostrar_interprete(self, n_interprete, interprete):
-        self.interprete_actual = n_interprete
-        self.texto_interprete.setText(interprete)
+    def mostrar_interprete(self, interprete):
+        self.interprete_actual = interprete
+        self.texto_interprete.setText(interprete["nombre"])

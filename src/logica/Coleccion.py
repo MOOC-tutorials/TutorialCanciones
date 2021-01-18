@@ -22,7 +22,7 @@ class Coleccion():
         return canciones
 
     def darInterpretes(self):
-        interpretes = session.query(Interprete).all()
+        interpretes = [elem.__dict__ for elem in session.query(Interprete).all()]
         return interpretes
 
     def buscarAlbumesPorTitulo(self, album_titulo):

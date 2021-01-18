@@ -55,6 +55,7 @@ class Ventana_Inicial(QWidget):
         self.distr_caja_busquedas.addWidget(self.txt_interprete, 2, 1)
         self.distr_caja_busquedas.addWidget(self.boton_buscar_interprete, 2, 2)
 
+
     def buscar_album(self):
         self.hide()
         self.interfaz.mostrar_ventana_lista_albums()

@@ -6,13 +6,12 @@ from .vista_interprete import Ventana_Interprete
 from .vista_lista_album import Ventana_Lista_Album
 from .vista_lista_cancion import Ventana_Lista_Canciones
 from .vista_lista_interpretes import Ventana_Lista_Interpretes
-from logica.Coleccion import Coleccion
 
 class App(QApplication):
-    def __init__(self, sys_argv):
+    def __init__(self, sys_argv, logica):
         super(App, self).__init__(sys_argv)
         
-        self.coleccion = Coleccion()
+        self.logica = logica
 
         self.mock_albums = [{"Titulo":"Caribe Atómico", "Intérpretes":"Aterciopelados", "Medio":"CD", "Anio":1998, "Descripcion":"Las canciones que me gustan"},
                           {"Titulo":"Corazones", "Intérpretes":"Los Prisioneros", "Medio":"Acetato", "Anio":1999, "Descripcion":"Las canciones que NO me gustan"},
@@ -33,7 +32,7 @@ class App(QApplication):
         self.ventana_cancion = Ventana_Cancion(self)
         self.ventana_lista_interpretes = Ventana_Lista_Interpretes(self)
         self.ventana_interprete = Ventana_Interprete(self)
-        self.mostrar_ventana_buscar()
+        self.mostrar_ventana_lista_albums()
 
     def mostrar_ventana_lista_albums(self):
         self.ventana_lista_album.show()
@@ -57,11 +56,11 @@ class App(QApplication):
 
     def mostrar_ventana_lista_interpretes(self):
         self.ventana_lista_interpretes.show()
-        self.ventana_lista_interpretes.mostrar_interpretes(self.mock_interpretes)
+        self.ventana_lista_interpretes.mostrar_interpretes(self.logica.darInterpretes())
 
-    def mostrar_ventana_interprete(self, n_interprete):
+    def mostrar_ventana_interprete(self, interprete):
         self.ventana_interprete.show()
-        self.ventana_interprete.mostrar_interprete(n_interprete, self.mock_interpretes[n_interprete])
+        self.ventana_interprete.mostrar_interprete(interprete)
 
     def dar_medios(self):
         return ["CD", "Acetato", "Casette"]
@@ -88,17 +87,18 @@ class App(QApplication):
         self.ventana_lista_album.mostrar_albums(self.mock_albums)
 
     def guardar_interprete(self, n_interprete, nuevo_interprete):
-        self.mock_interpretes[n_interprete: n_interprete+1] = [nuevo_interprete]
+        self.logica.editarInterprete(n_interprete, nuevo_interprete)
         self.ventana_interprete.hide()
         self.mostrar_ventana_lista_interpretes()
     
     def eliminar_interprete(self, n_interprete):
-        del self.mock_interpretes[n_interprete]
+        self.logica.eliminarInterprete(n_interprete)
         self.ventana_interprete.hide()
         self.mostrar_ventana_lista_interpretes()
 
     def crear_interprete(self, nuevo_interprete):
-        self.mock_interpretes.append(nuevo_interprete)
+        
+        self.logica.agregarInterprete(nuevo_interprete)
         self.mostrar_ventana_lista_interpretes()
 
     def crear_cancion(self, nueva_cancion):
