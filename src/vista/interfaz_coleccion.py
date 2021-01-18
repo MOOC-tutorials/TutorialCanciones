@@ -36,11 +36,11 @@ class App(QApplication):
 
     def mostrar_ventana_lista_albums(self):
         self.ventana_lista_album.show()
-        self.ventana_lista_album.mostrar_albums(self.mock_albums)
+        self.ventana_lista_album.mostrar_albums(self.logica.darAlbumes())
 
     def mostrar_ventana_album(self, n_album):
         self.ventana_album.show()
-        self.ventana_album.mostrar_album(n_album, self.mock_albums[n_album])
+        self.ventana_album.mostrar_album(n_album, self.logica.darAlbumes()[n_album-1])
         self.ventana_album.mostrar_canciones(self.mock_canciones)
 
     def mostrar_ventana_lista_canciones(self):
@@ -83,7 +83,7 @@ class App(QApplication):
         self.mostrar_ventana_lista_canciones()
 
     def crear_album(self, nuevo_album):
-        self.mock_albums.append(nuevo_album)
+        self.logica.agregarAlbum(nuevo_album["titulo"], nuevo_album["ano"], nuevo_album["descripcion"], nuevo_album["medio"])
         self.ventana_lista_album.mostrar_albums(self.mock_albums)
 
     def guardar_interprete(self, n_interprete, nuevo_interprete):

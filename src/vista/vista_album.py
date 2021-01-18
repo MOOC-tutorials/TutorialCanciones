@@ -98,10 +98,10 @@ class Ventana_Album(QWidget):
 
     def mostrar_album(self, n_album, album):
         self.album_actual = n_album
-        self.texto_album.setText(album["Titulo"])
-        self.texto_anio.setText(str(album["Anio"]))
-        self.texto_descripcion.setText(album["Descripcion"])
-        self.lista_medios.setCurrentIndex(self.interfaz.dar_medios().index(album["Medio"]))
+        self.texto_album.setText(album["titulo"])
+        self.texto_anio.setText(str(album["ano"]))
+        self.texto_descripcion.setText(album["descripcion"])
+        self.lista_medios.setCurrentIndex(self.interfaz.dar_medios().index(album["medio"].name))
 
     def limpiar_canciones(self):
         while self.caja_canciones.layout().count():

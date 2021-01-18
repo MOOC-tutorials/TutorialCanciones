@@ -10,7 +10,7 @@ class Coleccion():
         Base.metadata.create_all(engine)
 
     def darAlbumes(self):
-        albumes = session.query(Album).all()
+        albumes = [elem.__dict__ for elem in session.query(Album).all()]
         return albumes
 
     def darCancionesDeAlbum(self, album_id):

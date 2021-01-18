@@ -58,24 +58,23 @@ class Ventana_Lista_Album(QWidget):
         self.distr_lista_canciones.addWidget(self.caja_albums)
         self.distr_lista_canciones.addWidget(self.caja_botones)
     
-    def mostrar_albums(self, canciones):
+    def mostrar_albums(self, albumes):
         self.limpiar_albums()
         self.botones = []
-        for i in range(len(canciones)):
-            texto_titulo = QLineEdit(canciones[i]["Titulo"])
+        for i in range(len(albumes)):
+            texto_titulo = QLineEdit(albumes[i]["titulo"])
             texto_titulo.setReadOnly(True)
             self.caja_albums.layout().addWidget(texto_titulo,i+1,0)
 
-            texto_interpretes = QLineEdit(canciones[i]["Intérpretes"])
+            texto_interpretes = QLineEdit(albumes[i].get("interpretes",""))
             texto_interpretes.setReadOnly(True)
             self.caja_albums.layout().addWidget(texto_interpretes,i+1,1)
-
-            texto_medio = QLineEdit(canciones[i]["Medio"])
+            texto_medio = QLineEdit(albumes[i]["medio"].name)
             texto_medio.setReadOnly(True)
             self.caja_albums.layout().addWidget(texto_medio,i+1,2)
             
             self.botones.append(QPushButton("Ver"))
-            self.botones[i].clicked.connect(lambda estado, x=i: self.ver_album(x))
+            self.botones[i].clicked.connect(lambda estado, x=albumes[i]["id"]: self.ver_album(x))
             self.caja_albums.layout().addWidget(self.botones[i],i+1,3)
 
     def limpiar_albums(self):
@@ -84,9 +83,9 @@ class Ventana_Lista_Album(QWidget):
             if child.widget():
                 child.widget().deleteLater()
 
-    def ver_album(self, n_boton):
+    def ver_album(self, n_album):
         self.hide()
-        self.interfaz.mostrar_ventana_album(n_boton)
+        self.interfaz.mostrar_ventana_album(n_album)
     
     def buscar(self):
         self.hide()
@@ -125,7 +124,7 @@ class Ventana_Lista_Album(QWidget):
         layout.addWidget(butAceptar,4,0)
         layout.addWidget(butCancelar,4,1)
         
-        butAceptar.clicked.connect(lambda: self.crear_album( {"Titulo":txt1.text(),"Intérpretes":"", "Medio":combo4.currentText(),"Anio":txt2.text(),"Descripcion":txt3.text()}))
+        butAceptar.clicked.connect(lambda: self.crear_album( {"titulo":txt1.text(),"interpretes":"", "medio":combo4.currentText(),"ano":txt2.text(),"descripcion":txt3.text()}))
         butCancelar.clicked.connect(lambda: self.dialogo_nuevo_album.close())
 
         self.dialogo_nuevo_album.setWindowTitle("Añadir nuevo album")
