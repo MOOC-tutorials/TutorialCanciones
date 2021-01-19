@@ -14,7 +14,8 @@ class Coleccion():
         return albumes
 
     def darCancionesDeAlbum(self, album_id):
-        canciones = [elem.__dict__ for elem in session.query(Cancion).filter(Cancion.albumes.any(Album.id.in_([album_id]))).all()]
+        canciones = [elem.__dict__ for elem in
+                     session.query(Cancion).filter(Cancion.albumes.any(Album.id.in_([album_id]))).all()]
         return canciones
 
     def darCanciones(self):
@@ -35,15 +36,18 @@ class Coleccion():
         return session.query(Cancion).filter_by(id=cancion_id).first().__dict__
 
     def buscarAlbumesPorTitulo(self, album_titulo):
-        albumes = [elem.__dict__ for elem in session.query(Album).filter(Album.titulo.ilike('%{0}%'.format(album_titulo))).all()]
+        albumes = [elem.__dict__ for elem in
+                   session.query(Album).filter(Album.titulo.ilike('%{0}%'.format(album_titulo))).all()]
         return albumes
 
     def buscarCancionesPorTitulo(self, cancion_titulo):
-        canciones = [elem.__dict__ for elem in session.query(Cancion).filter(Cancion.titulo.ilike('%{0}%'.format(cancion_titulo))).all()]
+        canciones = [elem.__dict__ for elem in
+                     session.query(Cancion).filter(Cancion.titulo.ilike('%{0}%'.format(cancion_titulo))).all()]
         return canciones
 
     def buscarInterpretesPorNombre(self, interprete_nombre):
-        interpretes = [elem.__dict__ for elem in session.query(Interprete).filter(Interprete.nombre.ilike('%{0}%'.format(interprete_nombre))).all()]
+        interpretes = [elem.__dict__ for elem in session.query(Interprete).filter(
+            Interprete.nombre.ilike('%{0}%'.format(interprete_nombre))).all()]
         return interpretes
 
     def buscarCancionesPorInterprete(self, nombre):
@@ -146,12 +150,11 @@ class Coleccion():
         cancion.compositor = compositor
         interpretesCancion = []
         for item["id"] in interpretes:
-                interprete = session.query(Interprete).filter(Interprete.id == item).all()[0]
-                interpretesCancion.append(interprete)
+            interprete = session.query(Interprete).filter(Interprete.id == item).all()[0]
+            interpretesCancion.append(interprete)
         cancion.interpretes = interpretesCancion
         session.commit()
         return True
-        
 
     def editarInterprete(self, interprete_id, nombre):
         busqueda = session.query(Interprete).filter(Interprete.id != interprete_id, Interprete.nombre == nombre).all()
@@ -165,3 +168,35 @@ class Coleccion():
 
     def darMedios(self):
         return [medio.name for medio in Medio]
+
+    def asociarCancion(self, cancion_id, album_id):
+        cancion = session.query(Cancion).filter(Cancion.id == cancion_id).all()[0]
+        if cancion is not None:
+            album = session.query(Album).filter(Album.id == album_id).all()[0]
+            album.canciones.append(cancion)
+            session.commit()
+            return True
+        else:
+            return False
+
+    def asociarInterprete(self, cancion_id, interprete_id):
+        cancion = session.query(Cancion).filter(Cancion.id == cancion_id).all()[0]
+        if cancion is not None:
+            interprete = session.query(Interprete).filter(Interprete.id == interprete_id).all()[0]
+            interprete.cancion = cancion_id
+            session.commit()
+            return True
+        else:
+            return False
+
+    def obtenerCancion(self, cancion_id):
+        cancion = session.query(Cancion).filter(Cancion.id == cancion_id).all()[0]
+        return cancion
+
+    def obtenerAlbum(self, album_id):
+        album = session.query(Album).filter(Album.id == album_id).all()[0]
+        return album
+
+    def obtenerInterprete(self, interprete_id):
+        interprete = session.query(Interprete).filter(Interprete.id == interprete_id).all()[0]
+        return interprete
