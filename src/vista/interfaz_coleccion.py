@@ -13,18 +13,6 @@ class App(QApplication):
         
         self.logica = logica
 
-        self.mock_albums = [{"Titulo":"Caribe Atómico", "Intérpretes":"Aterciopelados", "Medio":"CD", "Anio":1998, "Descripcion":"Las canciones que me gustan"},
-                          {"Titulo":"Corazones", "Intérpretes":"Los Prisioneros", "Medio":"Acetato", "Anio":1999, "Descripcion":"Las canciones que NO me gustan"},
-                          {"Titulo":"Pateando Piedras", "Intérpretes":"Los Prisioneros", "Medio":"CD", "Anio":2001, "Descripcion":"Las canciones que meh"},
-                          {"Titulo":"Pateando Piedras", "Intérpretes":"Los Prisioneros", "Medio":"Casette", "Anio":1995, "Descripcion":"Las canciones que casi me gustan"}]
-
-        self.mock_canciones = [{"Titulo":"El estuche", "Intérpretes":"Aterciopelados", "Duracion":"3:10", "Compositor":"Andrea Echeverri"},
-                          {"Titulo":"Maligno", "Intérpretes":"Aterciopelados", "Duracion":"3:25", "Compositor":"Andrea Echeverri"},
-                          {"Titulo":"Caribe atómico", "Intérpretes":"Aterciopelados", "Duracion":"4:02", "Compositor":"Andrea Echeverri"},
-                         ]
-                         
-        self.mock_interpretes = ["Aterciopelados", "Los Prisioneros"]
-
         self.ventana_buscar = Ventana_Inicial(self)
         self.ventana_lista_album = Ventana_Lista_Album(self)
         self.ventana_album = Ventana_Album(self)
@@ -38,18 +26,18 @@ class App(QApplication):
         self.ventana_lista_album.show()
         self.ventana_lista_album.mostrar_albums(self.logica.darAlbumes())
 
-    def mostrar_ventana_album(self, n_album):
+    def mostrar_ventana_album(self, indice_album):
         self.ventana_album.show()
-        self.ventana_album.mostrar_album(n_album, self.logica.darAlbumes()[n_album-1])
-        self.ventana_album.mostrar_canciones(self.mock_canciones)
+        self.ventana_album.mostrar_album(self.logica.darAlbumPorId(indice_album))
+        self.ventana_album.mostrar_canciones(self.logica.darCancionesDeAlbum(indice_album))
 
     def mostrar_ventana_lista_canciones(self):
         self.ventana_lista_canciones.show()
         self.ventana_lista_canciones.mostrar_canciones(self.logica.darCanciones())
 
-    def mostrar_ventana_cancion(self, n_cancion):
+    def mostrar_ventana_cancion(self, id_cancion):
         self.ventana_cancion.show()
-        self.ventana_cancion.mostrar_cancion(n_cancion, self.mock_canciones[n_cancion])
+        self.ventana_cancion.mostrar_cancion(self.logica.darCancionPorId(id_cancion))
 
     def mostrar_ventana_buscar(self):
         self.ventana_buscar.show()
@@ -60,28 +48,26 @@ class App(QApplication):
 
     def mostrar_ventana_interprete(self, n_interprete):
         self.ventana_interprete.show()
-        print(n_interprete-1)
-        self.ventana_interprete.mostrar_interprete(self.logica.darInterpretes()[n_interprete-1])
+        print(n_interprete)
+        self.ventana_interprete.mostrar_interprete(self.logica.darInterpretePorId(n_interprete))
 
     def dar_medios(self):
-        return ["CD", "Acetato", "Casette"]
+        return self.logica.darMedios()
 
-    def guardar_album(self, n_album, album_a_insertar):
-        self.mock_albums[n_album:n_album+1] = [album_a_insertar]
+    def guardar_album(self, n_album, nuevo_album):
+        self.logica.editarAlbum(n_album, nuevo_album["titulo"], nuevo_album["ano"], nuevo_album["descripcion"], nuevo_album["medio"])
 
     def eliminar_album(self, n_album):
         self.mock_albums.pop(n_album)
         self.ventana_album.mostrar_album(0, self.mock_albums[0])
 
-    def guardar_cancion(self, n_cancion, cancion_a_insertar):
-        self.mock_canciones[n_cancion:n_cancion+1] = [cancion_a_insertar]
-        self.ventana_cancion.hide()
-        self.mostrar_ventana_lista_canciones()
+    def guardar_cancion(self, n_cancion, nueva_cancion):
+        self.logica.editarCancion(n_cancion, nueva_cancion["titulo"], nueva_cancion["minutos"], nueva_cancion["segundos"], nueva_cancion["compositor"], nueva_cancion["interpretes"])
 
-    def eliminar_cancion(self, n_cancion):
-        del self.mock_canciones[n_cancion]
+    def eliminar_cancion(self, id_cancion):
         self.ventana_cancion.hide()
-        self.mostrar_ventana_lista_canciones()
+        self.logica.eliminarCancion(id_cancion)
+        self.ventana_lista_canciones.mostrar_canciones(self.logica.darCanciones())
 
     def crear_album(self, nuevo_album):
         self.logica.agregarAlbum(nuevo_album["titulo"], nuevo_album["ano"], nuevo_album["descripcion"], nuevo_album["medio"])
@@ -102,8 +88,9 @@ class App(QApplication):
         self.mostrar_ventana_lista_interpretes()
 
     def crear_cancion(self, nueva_cancion):
-        self.coleccion.agregarCancion(nueva_cancion["Titulo"],nueva_cancion["Minutos"], nueva_cancion["Segundos"], nueva_cancion["Compositor"], -1, -1)
-        
+        self.logica.agregarCancion(nueva_cancion["Titulo"],nueva_cancion["Minutos"], nueva_cancion["Segundos"], nueva_cancion["Compositor"])
+        self.mostrar_ventana_lista_canciones()
+
     def mostrar_resultados_albumes(self, nombre_album):
         albumes = self.logica.buscarAlbumesPorTitulo(nombre_album)
         self.ventana_buscar.mostrar_resultados_albumes(albumes)
@@ -115,5 +102,8 @@ class App(QApplication):
     def mostrar_resultados_interpretes(self, nombre_interprete):
         interpretes = self.logica.buscarInterpretesPorNombre(nombre_interprete)
         self.ventana_buscar.mostrar_resultados_interpretes(interpretes)
+
+    def quitar_cancion_de_album(self, id_cancion, id_album):
+        pass
 
     

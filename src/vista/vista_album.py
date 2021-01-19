@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QDialog, QWidget, QPushButton, QHBoxLayout, QGroupBox, QGridLayout, QLabel, QLineEdit, QVBoxLayout, QComboBox
+from PyQt5.QtWidgets import QScrollArea, QDialog, QWidget, QPushButton, QHBoxLayout, QGroupBox, QGridLayout, QLabel, QLineEdit, QVBoxLayout, QComboBox
 from PyQt5.QtGui import QFont
 from PyQt5 import QtCore
 
@@ -12,13 +12,13 @@ class Ventana_Album(QWidget):
         self.left = 80
         self.top = 80
         self.width = 500
-        self.height = 150
+        self.height = 450
         #Inicializamos la ventana principal
         self.inicializar_ventana()
 
     def inicializar_ventana(self):
         self.setWindowTitle(self.title)
-        self.setGeometry(self.left, self.top, self.width, self.height)
+        self.setFixedSize(self.width, self.height)
 
         self.distr_album = QVBoxLayout()
         self.setLayout(self.distr_album)
@@ -67,7 +67,8 @@ class Ventana_Album(QWidget):
         
         self.boton_adicionar = QPushButton("Nueva canción")
         layout_botones.addWidget(self.boton_adicionar)
-        self.boton_adicionar = QPushButton("canción existente")
+        self.boton_adicionar.clicked.connect(self.mostrar_dialogo_nueva_cancion)
+        self.boton_adicionar = QPushButton("Canción existente")
         layout_botones.addWidget(self.boton_adicionar)
 
         self.caja_album.layout().addWidget(self.caja_datos)
@@ -84,20 +85,22 @@ class Ventana_Album(QWidget):
             etiqueta.setAlignment(QtCore.Qt.AlignCenter)
             layout_titulos.addWidget(etiqueta,0,i)
 
-        self.boton_albums = QPushButton("Ver Álbums")
+        self.boton_albums = QPushButton("Ver lista de albums")
         self.boton_albums.clicked.connect(self.ver_albums)
 
-        self.caja_canciones = QGroupBox()
-        layout_canciones = QGridLayout()
-        self.caja_canciones.setLayout(layout_canciones)
+        self.lista_canciones = QScrollArea()
+        self.lista_canciones.setWidgetResizable(True)
+        self.caja_canciones = QWidget()
+        self.caja_canciones.setLayout(QGridLayout())
+        self.lista_canciones.setWidget(self.caja_canciones)
 
         self.distr_album.addWidget(self.caja_album)
         self.distr_album.addWidget(self.caja_titulos)
-        self.distr_album.addWidget(self.caja_canciones)
+        self.distr_album.addWidget(self.lista_canciones)
         self.distr_album.addWidget(self.boton_albums)
 
-    def mostrar_album(self, n_album, album):
-        self.album_actual = n_album
+    def mostrar_album(self, album):
+        self.album_actual = album
         self.texto_album.setText(album["titulo"])
         self.texto_anio.setText(str(album["ano"]))
         self.texto_descripcion.setText(album["descripcion"])
@@ -125,23 +128,58 @@ class Ventana_Album(QWidget):
             texto_duracion.setReadOnly(True)
             self.caja_canciones.layout().addWidget(texto_duracion,i+1,2)
             
-            self.botones.append(QPushButton("Ver"))
-            self.botones[i].clicked.connect(lambda estado, x=i: self.ver_cancion(x))
+            self.botones.append(QPushButton("Quitar"))
+            self.botones[i].clicked.connect(lambda estado, x=canciones[i]["id"]: self.interfaz.quitar_cancion_de_album(x))
             self.caja_canciones.layout().addWidget(self.botones[i],i+1,3)
 
     def guardar_album(self):
-        album_modificado = {"Titulo":self.texto_album.text(),"Intérpretes":self.texto_descripcion.text(), "Medio":self.lista_medios.currentText(),"Anio":self.texto_anio.text(),"Descripcion":self.texto_descripcion.text()}
-        self.interfaz.guardar_album(self.album_actual, album_modificado)
+        album_modificado = {"titulo":self.texto_album.text(),"interpretes":self.texto_descripcion.text(), "medio":self.lista_medios.currentText(),"ano":self.texto_anio.text(),"descripcion":self.texto_descripcion.text()}
+        self.interfaz.guardar_album(self.album_actual["id"], album_modificado)
 
     def eliminar_album(self):
         self.interfaz.eliminar_album(self.album_actual)
     
-    def ver_cancion(self, n_boton):
-        self.interfaz.mostrar_ventana_cancion(n_boton)
-        self.hide()
 
     def ver_albums(self):
         self.interfaz.mostrar_ventana_lista_albums()
         self.hide()
 
-   
+    def mostrar_dialogo_nueva_cancion(self):
+        self.dialogo_nueva_cancion = QDialog(self)
+        
+        layout = QGridLayout()
+        self.dialogo_nueva_cancion.setLayout(layout)
+
+        lab1 = QLabel("Título")
+        txt1 = QLineEdit()
+        layout.addWidget(lab1,0,0)
+        layout.addWidget(txt1,0,1,1,3)
+
+        lab2 = QLabel("Duración")
+        txt2_1 = QLineEdit(maxLength=2)
+        txt2_2 = QLineEdit(maxLength=2)
+        layout.addWidget(lab2,1,0)
+        layout.addWidget(txt2_1,1,1)
+        layout.addWidget(QLabel(":"), 1,2)
+        layout.addWidget(txt2_2,1,3)
+
+        lab3 = QLabel("Compositor")
+        txt3 = QLineEdit()
+        layout.addWidget(lab3,2,0)
+        layout.addWidget(txt3,2,1,1,3)
+
+        butAceptar = QPushButton("Aceptar")
+        butCancelar = QPushButton("Cancelar")
+        
+        layout.addWidget(butAceptar,4,0)
+        layout.addWidget(butCancelar,4,1)
+        
+        butAceptar.clicked.connect(lambda: self.crear_cancion( {"Titulo":txt1.text(),"Interpretes":"", "Minutos":txt2_1.text(),"Segundos":txt2_2.text(),"Compositor":txt3.text()}))
+        butCancelar.clicked.connect(lambda: self.dialogo_nueva_cancion.close())
+
+        self.dialogo_nueva_cancion.setWindowTitle("Añadir nueva canción")
+        self.dialogo_nueva_cancion.exec_()
+        self.dialogo_nueva_cancion.close()
+
+    def crear_cancion(self, nueva_cancion):
+        pass

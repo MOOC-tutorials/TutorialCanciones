@@ -13,13 +13,13 @@ class Ventana_Cancion(QWidget):
         self.left = 80
         self.top = 80
         self.width = 500
-        self.height = 150
+        self.height = 200
         #Inicializamos la ventana principal
         self.inicializar_ventana()
 
     def inicializar_ventana(self):
         self.setWindowTitle(self.title)
-        self.setGeometry(self.left, self.top, self.width, self.height)
+        self.setFixedSize(self.width, self.height)
 
         self.distr_cancion = QHBoxLayout()
         self.setLayout(self.distr_cancion)
@@ -36,28 +36,33 @@ class Ventana_Cancion(QWidget):
             layout_datos.addWidget(etiqueta,i,0)
 
         self.texto_cancion = QLineEdit()
-        layout_datos.addWidget(self.texto_cancion, 0, 1)
+        layout_datos.addWidget(self.texto_cancion, 0, 1, 1, 3)
 
-        self.texto_duracion = QLineEdit()
-        layout_datos.addWidget(self.texto_duracion, 1, 1)
+        self.texto_minutos = QLineEdit(maxLength=2)
+        layout_datos.addWidget(self.texto_minutos, 1, 1)
+
+        layout_datos.addWidget(QLabel(":"),1,2)
+
+        self.texto_segundos = QLineEdit(maxLength=2)
+        layout_datos.addWidget(self.texto_segundos, 1, 3)
 
         self.texto_interpretes = QLineEdit()
         self.texto_interpretes.setReadOnly(True)
-        layout_datos.addWidget(self.texto_interpretes, 2, 1)
+        layout_datos.addWidget(self.texto_interpretes, 2, 1, 1, 3)
 
         self.texto_compositor = QLineEdit()
-        layout_datos.addWidget(self.texto_compositor, 3, 1)
+        layout_datos.addWidget(self.texto_compositor, 3, 1, 1, 3)
 
         self.caja_botones = QGroupBox()
         layout_botones = QVBoxLayout()
         self.caja_botones.setLayout(layout_botones)
 
         self.boton_guardar = QPushButton("Guardar datos editados")
-        self.boton_guardar.clicked.connect(lambda: self.interfaz.guardar_cancion(self.cancion_actual, {"Titulo":self.texto_cancion.text(), "Intérpretes":self.texto_interpretes.text(), "Duracion":self.texto_duracion.text(),"Compositor":self.texto_compositor.text()}))
+        self.boton_guardar.clicked.connect(lambda: self.interfaz.guardar_cancion(self.cancion_actual["id"], {"titulo":self.texto_cancion.text(), "interpretes":self.texto_interpretes.text(), "minutos":self.texto_minutos.text(),"segundos":self.texto_segundos.text(),"compositor":self.texto_compositor.text(), "interpretes":[]}))
         layout_botones.addWidget(self.boton_guardar)
 
         self.boton_borrar = QPushButton("Borrar")
-        self.boton_borrar.clicked.connect(lambda: self.interfaz.eliminar_cancion(self.cancion_actual))
+        self.boton_borrar.clicked.connect(lambda: self.interfaz.eliminar_cancion(self.cancion_actual["id"]))
         layout_botones.addWidget(self.boton_borrar)
 
         self.boton_adicionar = QPushButton("Adicionar Intérprete")
@@ -71,12 +76,13 @@ class Ventana_Cancion(QWidget):
         self.distr_cancion.addWidget(self.caja_datos)
         self.distr_cancion.addWidget(self.caja_botones)
         
-    def mostrar_cancion(self, n_cancion, cancion):
-        self.cancion_actual = n_cancion
-        self.texto_cancion.setText(cancion["Titulo"])
-        self.texto_interpretes.setText(cancion["Intérpretes"])
-        self.texto_duracion.setText(cancion["Duracion"])
-        self.texto_compositor.setText(cancion["Compositor"])
+    def mostrar_cancion(self, cancion):
+        self.cancion_actual = cancion
+        self.texto_cancion.setText(cancion["titulo"])
+        self.texto_interpretes.setText(cancion.get("interpretes",""))
+        self.texto_minutos.setText(str(cancion["minutos"]))
+        self.texto_segundos.setText(str(cancion["segundos"]))
+        self.texto_compositor.setText(cancion["compositor"])
 
     def ver_canciones(self):
         self.interfaz.mostrar_ventana_lista_canciones()

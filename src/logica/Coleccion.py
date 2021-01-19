@@ -1,4 +1,4 @@
-from modelo.album import Album
+from modelo.album import Album, Medio
 from modelo.cancion import Cancion
 from modelo.declarative_base import session, engine, Base
 from modelo.interprete import Interprete
@@ -14,7 +14,7 @@ class Coleccion():
         return albumes
 
     def darCancionesDeAlbum(self, album_id):
-        canciones = session.query(Cancion).filter(Cancion.albumes.any(Album.id.in_([album_id]))).all()
+        canciones = [elem.__dict__ for elem in session.query(Cancion).filter(Cancion.albumes.any(Album.id.in_([album_id]))).all()]
         return canciones
 
     def darCanciones(self):
@@ -25,12 +25,21 @@ class Coleccion():
         interpretes = [elem.__dict__ for elem in session.query(Interprete).all()]
         return interpretes
 
+    def darAlbumPorId(self, album_id):
+        return session.query(Album).get(album_id).__dict__
+
+    def darInterpretePorId(self, interprete_id):
+        return session.query(Interprete).filter_by(id=interprete_id).first().__dict__
+
+    def darCancionPorId(self, cancion_id):
+        return session.query(Cancion).filter_by(id=cancion_id).first().__dict__
+
     def buscarAlbumesPorTitulo(self, album_titulo):
         albumes = [elem.__dict__ for elem in session.query(Album).filter(Album.titulo.ilike('%{0}%'.format(album_titulo))).all()]
         return albumes
 
     def buscarCancionesPorTitulo(self, cancion_titulo):
-        canciones = session.query(Cancion).filter(Cancion.titulo.ilike('%{0}%'.format(cancion_titulo))).all()
+        canciones = [elem.__dict__ for elem in session.query(Cancion).filter(Cancion.titulo.ilike('%{0}%'.format(cancion_titulo))).all()]
         return canciones
 
     def buscarInterpretesPorNombre(self, interprete_nombre):
@@ -67,6 +76,12 @@ class Coleccion():
         else:
             return False
 
+    def agregarCancion(self, titulo, minutos, segundos, compositor):
+        nuevaCancion = Cancion(titulo=titulo, minutos=minutos, segundos=segundos, compositor=compositor)
+        session.add(nuevaCancion)
+        session.commit()
+        return True
+
     def agregarInterprete(self, nombre):
         interprete = session.query(Interprete).filter(Interprete.nombre == nombre).all()
         if len(interprete) == 0:
@@ -86,14 +101,10 @@ class Coleccion():
         except:
             return False
 
-    def eliminarCancion(self, cancion_id, album_id):
+    def eliminarCancion(self, cancion_id, album_id=-1):
         try:
             cancion = session.query(Cancion).filter(Cancion.id == cancion_id).all()[0]
-            album = session.query(Album).filter(Album.id == album_id).all()[0]
-            if len(cancion.albumes) == 1:
-                session.delete(cancion)
-            elif len(cancion.albumes) > 1:
-                album.canciones.remove(cancion)
+            session.delete(cancion)
             session.commit()
             return True
         except:
@@ -127,24 +138,20 @@ class Coleccion():
         except:
             return False
 
-    def editarCancion(self, cancion_id, titulo, minutos, segundos, compositor, album_id, interpretes_id):
-        busqueda = session.query(Cancion).filter(Cancion.albumes.any(Album.id.in_([album_id])),
-                                                 Cancion.titulo == titulo, Cancion.id != cancion_id).all()
-        if len(busqueda) == 0:
-            cancion = session.query(Cancion).filter(Cancion.id == cancion_id).all()[0]
-            cancion.titulo = titulo
-            cancion.minutos = minutos
-            cancion.segundos = segundos
-            cancion.compositor = compositor
-            interpretesCancion = []
-            for item in interpretes_id:
+    def editarCancion(self, cancion_id, titulo, minutos, segundos, compositor, interpretes):
+        cancion = session.query(Cancion).filter(Cancion.id == cancion_id).all()[0]
+        cancion.titulo = titulo
+        cancion.minutos = minutos
+        cancion.segundos = segundos
+        cancion.compositor = compositor
+        interpretesCancion = []
+        for item["id"] in interpretes:
                 interprete = session.query(Interprete).filter(Interprete.id == item).all()[0]
                 interpretesCancion.append(interprete)
-            cancion.interpretes = interpretesCancion
-            session.commit()
-            return True
-        else:
-            return False
+        cancion.interpretes = interpretesCancion
+        session.commit()
+        return True
+        
 
     def editarInterprete(self, interprete_id, nombre):
         busqueda = session.query(Interprete).filter(Interprete.id != interprete_id, Interprete.nombre == nombre).all()
@@ -155,3 +162,6 @@ class Coleccion():
             return True
         else:
             return False
+
+    def darMedios(self):
+        return [medio.name for medio in Medio]

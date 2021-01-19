@@ -18,7 +18,7 @@ class Ventana_Interprete(QWidget):
 
     def inicializar_ventana(self):
         self.setWindowTitle(self.title)
-        self.setGeometry(self.left, self.top, self.width, self.height)
+        self.setFixedSize(self.width, self.height)
 
         self.distr_interprete = QVBoxLayout()
         self.setLayout(self.distr_interprete)
@@ -37,9 +37,14 @@ class Ventana_Interprete(QWidget):
         layout_botones = QHBoxLayout()
         self.caja_botones.setLayout(layout_botones)
 
+        self.boton_volver = QPushButton("Ver lista de intérpretes")
+        self.boton_volver.clicked.connect(self.volver_atras)
+        layout_botones.addWidget(self.boton_volver)
+
         self.boton_guardar = QPushButton("Guardar datos editados")
         self.boton_guardar.clicked.connect(lambda: self.interfaz.guardar_interprete(self.interprete_actual["id"], self.texto_interprete.text()))
         layout_botones.addWidget(self.boton_guardar)
+
 
         self.boton_borrar = QPushButton("Borrar")
         self.boton_borrar.clicked.connect(lambda : self.interfaz.eliminar_interprete(self.interprete_actual["id"]))
@@ -51,3 +56,7 @@ class Ventana_Interprete(QWidget):
     def mostrar_interprete(self, interprete):
         self.interprete_actual = interprete
         self.texto_interprete.setText(interprete["nombre"])
+
+    def volver_atras(self):
+        self.hide()
+        self.interfaz.mostrar_ventana_lista_interpretes()

@@ -12,7 +12,7 @@ class Ventana_Inicial(QWidget):
         self.left = 80
         self.top = 80
         self.width = 500
-        self.height = 300
+        self.height = 400
         #Inicializamos la ventana principal
         self.inicializar_ventana()
 
@@ -22,7 +22,7 @@ class Ventana_Inicial(QWidget):
     def inicializar_ventana(self):
         #inicializamos la ventana
         self.setWindowTitle(self.title)
-        self.setGeometry(self.left, self.top, self.width, self.height)
+        self.setFixedSize( self.width, self.height)
         
         
         self.distr_caja_busquedas = QGridLayout()
@@ -114,7 +114,7 @@ class Ventana_Inicial(QWidget):
             self.widget_tabla_resultados.layout().addWidget(etiqueta_nombre, fila, 0, 1, 2)  
             self.widget_tabla_resultados.layout().setAlignment(etiqueta_nombre, QtCore.Qt.AlignTop)
             boton_ver = QPushButton("Ver")
-            boton_ver.clicked.connect(lambda estado, id=album["id"]: self.interfaz.mostrar_ventana_album(id))
+            boton_ver.clicked.connect(lambda estado, id=album["id"]: self.ver_album(id))
             boton_ver.setFixedSize(40,30)
             self.widget_tabla_resultados.layout().addWidget(boton_ver, fila, 1)   
             self.widget_tabla_resultados.layout().setAlignment(boton_ver, QtCore.Qt.AlignTop)
@@ -138,7 +138,7 @@ class Ventana_Inicial(QWidget):
             self.widget_tabla_resultados.layout().addWidget(etiqueta_nombre, fila, 0, 1, 2)  
             self.widget_tabla_resultados.layout().setAlignment(etiqueta_nombre, QtCore.Qt.AlignTop)
             boton_ver = QPushButton("Ver")
-            boton_ver.clicked.connect(lambda estado, id=cancion["id"]: self.interfaz.mostrar_ventana_cancion(id))
+            boton_ver.clicked.connect(lambda estado, id=cancion["id"]: self.ver_cancion(id))
             boton_ver.setFixedSize(40,30)
             self.widget_tabla_resultados.layout().addWidget(boton_ver, fila, 1)   
             self.widget_tabla_resultados.layout().setAlignment(boton_ver, QtCore.Qt.AlignTop)
@@ -162,7 +162,7 @@ class Ventana_Inicial(QWidget):
             self.widget_tabla_resultados.layout().addWidget(etiqueta_nombre, fila, 0, 1, 2)  
             self.widget_tabla_resultados.layout().setAlignment(etiqueta_nombre, QtCore.Qt.AlignTop)
             boton_ver = QPushButton("Ver")
-            boton_ver.clicked.connect(lambda estado, id=interprete["id"]: self.interfaz.mostrar_ventana_interprete(id))
+            boton_ver.clicked.connect(lambda estado, id=interprete["id"]: self.ver_interprete(id))
             boton_ver.setFixedSize(40,30)
             self.widget_tabla_resultados.layout().addWidget(boton_ver, fila, 1)   
             self.widget_tabla_resultados.layout().setAlignment(boton_ver, QtCore.Qt.AlignTop)
@@ -173,12 +173,20 @@ class Ventana_Inicial(QWidget):
         self.hide()
         self.interfaz.mostrar_ventana_lista_albums()
 
+    def ver_album(self, indice_album):
+        self.hide()
+        self.interfaz.mostrar_ventana_album(indice_album)
+
     def buscar_cancion(self):
         self.interfaz.mostrar_resultados_canciones(self.txt_cancion.text())
 
     def ver_canciones(self):
         self.hide()
-        self.interfaz.mostrar_ventana_lista_albums()
+        self.interfaz.mostrar_ventana_lista_canciones()
+
+    def ver_cancion(self, indice_cancion):
+        self.hide()
+        self.interfaz.mostrar_ventana_cancion(indice_cancion)
      
     def buscar_interprete(self):
         self.interfaz.mostrar_resultados_interpretes(self.txt_interprete.text())
@@ -186,5 +194,9 @@ class Ventana_Inicial(QWidget):
 
     def ver_interpretes(self):
         self.hide()
-        self.interfaz.mostrar_ventana_lista_albums()
+        self.interfaz.mostrar_ventana_lista_interpretes()
+
+    def ver_interprete(self, indice_interprete):
+        self.hide()
+        self.interfaz.mostrar_ventana_interprete(indice_interprete)
  
