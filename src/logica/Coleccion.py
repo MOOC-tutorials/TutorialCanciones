@@ -1,7 +1,7 @@
-from modelo.album import Album, Medio
-from modelo.cancion import Cancion
-from modelo.declarative_base import session, engine, Base
-from modelo.interprete import Interprete
+from src.modelo.album import Album, Medio
+from src.modelo.cancion import Cancion
+from src.modelo.declarative_base import session, engine, Base
+from src.modelo.interprete import Interprete
 
 
 class Coleccion():
@@ -51,7 +51,8 @@ class Coleccion():
         return interpretes
 
     def buscarCancionesPorInterprete(self, nombre):
-        canciones = session.query(Cancion).filter(Cancion.interpretes.any(Interprete.nombre.ilike(nombre))).all()
+        canciones = [elem.__dict__ for elem in session.query(Cancion).filter(
+            Cancion.interpretes.any(Interprete.nombre.ilike('%{0}%'.format(nombre)))).all()]
         return canciones
 
     def agregarAlbum(self, titulo, anio, descripcion, medio):
@@ -188,15 +189,3 @@ class Coleccion():
             return True
         else:
             return False
-
-    def obtenerCancion(self, cancion_id):
-        cancion = session.query(Cancion).filter(Cancion.id == cancion_id).all()[0]
-        return cancion
-
-    def obtenerAlbum(self, album_id):
-        album = session.query(Album).filter(Album.id == album_id).all()[0]
-        return album
-
-    def obtenerInterprete(self, interprete_id):
-        interprete = session.query(Interprete).filter(Interprete.id == interprete_id).all()[0]
-        return interprete
