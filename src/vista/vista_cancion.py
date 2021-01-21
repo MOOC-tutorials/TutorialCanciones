@@ -1,5 +1,5 @@
 
-from PyQt5.QtWidgets import QDialog, QWidget, QPushButton, QHBoxLayout, QGroupBox, QGridLayout, QLabel, QLineEdit, QVBoxLayout
+from PyQt5.QtWidgets import QComboBox, QDialog, QWidget, QPushButton, QHBoxLayout, QGroupBox, QGridLayout, QLabel, QLineEdit, QVBoxLayout
 from PyQt5.QtGui import QFont
 from PyQt5 import QtCore
 
@@ -66,7 +66,7 @@ class Ventana_Cancion(QWidget):
         layout_botones.addWidget(self.boton_borrar)
 
         self.boton_adicionar = QPushButton("Adicionar Intérprete")
-        #self.boton_adicionar.clicked.connect()
+        self.boton_adicionar.clicked.connect(self.mostrar_dialogo_agregar_interprete)
         layout_botones.addWidget(self.boton_adicionar)
 
         self.boton_lista_canciones = QPushButton("Ver lista de canciones")
@@ -79,7 +79,7 @@ class Ventana_Cancion(QWidget):
     def mostrar_cancion(self, cancion):
         self.cancion_actual = cancion
         self.texto_cancion.setText(cancion["titulo"])
-        self.texto_interpretes.setText(cancion.get("interpretes",""))
+        self.texto_interpretes.setText(cancion.get("interpretes",";".join(cancion.get("interpretes",[]))))
         self.texto_minutos.setText(str(cancion["minutos"]))
         self.texto_segundos.setText(str(cancion["segundos"]))
         self.texto_compositor.setText(cancion["compositor"])
@@ -87,3 +87,39 @@ class Ventana_Cancion(QWidget):
     def ver_canciones(self):
         self.interfaz.mostrar_ventana_lista_canciones()
         self.hide()
+
+    def mostrar_dialogo_agregar_interprete(self):
+        self.dialogo_agregar_interprete = QDialog(self)
+
+        layout = QGridLayout()
+        self.dialogo_agregar_interprete.setLayout(layout)
+        self.dialogo_agregar_interprete.setFixedSize(400,100)
+
+        lab1 = QLabel("Intérpretes")
+        lista_interpretes = QComboBox()
+        for interprete in self.interfaz.dar_interpretes():
+            lista_interpretes.addItem(interprete["nombre"], interprete['id']) 
+        layout.addWidget(lab1,0,0)
+        layout.addWidget(lista_interpretes,0,1)
+        
+        widget_botones = QWidget()
+        widget_botones.setFixedHeight(50)
+        widget_botones.setLayout(QGridLayout())
+
+        butAceptar = QPushButton("Agregar")
+        butCancelar = QPushButton("Cancelar")
+
+        widget_botones.layout().addWidget(butAceptar,0,0)
+        widget_botones.layout().addWidget(butCancelar,0,1)
+
+        layout.addWidget(widget_botones, 4,0,1,2)
+
+        butAceptar.clicked.connect(lambda: self.asociar_interprete_a_cancion(lista_interpretes.itemData(lista_interpretes.currentIndex())))
+        butCancelar.clicked.connect(lambda: self.dialogo_agregar_interprete.close())
+
+        self.dialogo_agregar_interprete.setWindowTitle("Agregar intérprete")
+        self.dialogo_agregar_interprete.exec_()
+
+    def asociar_interprete_a_cancion(self, id_interprete):
+        self.dialogo_agregar_interprete.close()
+        self.interfaz.asociar_interprete_a_cancion(self.cancion_actual['id'], id_interprete)

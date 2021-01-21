@@ -54,6 +54,9 @@ class App(QApplication):
     def dar_medios(self):
         return self.logica.darMedios()
 
+    def dar_interpretes(self):
+        return self.logica.darInterpretes()
+
     def guardar_album(self, n_album, nuevo_album):
         self.logica.editarAlbum(n_album, nuevo_album["titulo"], nuevo_album["ano"], nuevo_album["descripcion"], nuevo_album["medio"])
 
@@ -106,4 +109,6 @@ class App(QApplication):
     def quitar_cancion_de_album(self, id_cancion, id_album):
         pass
 
-    
+    def asociar_interprete_a_cancion(self, id_cancion, id_interprete):
+        res = self.logica.asociarInterprete(id_cancion, id_interprete)
+        self.ventana_cancion.mostrar_cancion(self.logica.darCancionPorId(id_cancion))
