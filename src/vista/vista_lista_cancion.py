@@ -148,7 +148,7 @@ class Ventana_Lista_Canciones(QWidget):
             butAceptar.clicked.connect(lambda: self.crear_cancion( {"Titulo":txt1.text(),"Interpretes":"", "Minutos":txt2_1.text(),"Segundos":txt2_2.text(),"Compositor":txt3.text()}))
             butCancelar.clicked.connect(lambda: self.dialogo_nueva_cancion.close())
 
-            self.dialogo_nueva_cancion.setWindowTitle("Añadir nuevo album")
+            self.dialogo_nueva_cancion.setWindowTitle("Añadir nueva canción")
             self.dialogo_nueva_cancion.exec_()
             self.dialogo_nueva_cancion.close()
 

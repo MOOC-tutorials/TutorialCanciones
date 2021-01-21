@@ -181,6 +181,7 @@ class Coleccion():
             return False
 
     def asociarInterprete(self, cancion_id, interprete_id):
+        print(cancion_id, interprete_id)
         cancion = session.query(Cancion).filter(Cancion.id == cancion_id).all()[0]
         interprete = session.query(Interprete).filter(Interprete.id == interprete_id).all()[0]
         if cancion is not None and interprete is not None:
