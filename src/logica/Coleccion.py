@@ -50,9 +50,9 @@ class Coleccion():
             Interprete.nombre.ilike('%{0}%'.format(interprete_nombre))).all()]
         return interpretes
 
-    def buscarCancionesPorInterprete(self, nombre):
+    def buscarCancionesPorInterprete(self, interprete_nombre):
         canciones = [elem.__dict__ for elem in session.query(Cancion).filter(
-            Cancion.interpretes.any(Interprete.nombre.ilike('%{0}%'.format(nombre)))).all()]
+            Cancion.interpretes.any(Interprete.nombre.ilike('%{0}%'.format(interprete_nombre)))).all()]
         return canciones
 
     def agregarAlbum(self, titulo, anio, descripcion, medio):
@@ -106,7 +106,7 @@ class Coleccion():
         except:
             return False
 
-    def eliminarCancion(self, cancion_id, album_id=-1):
+    def eliminarCancion(self, cancion_id):
         try:
             cancion = session.query(Cancion).filter(Cancion.id == cancion_id).all()[0]
             session.delete(cancion)
@@ -172,8 +172,8 @@ class Coleccion():
 
     def asociarCancion(self, cancion_id, album_id):
         cancion = session.query(Cancion).filter(Cancion.id == cancion_id).all()[0]
-        if cancion is not None:
-            album = session.query(Album).filter(Album.id == album_id).all()[0]
+        album = session.query(Album).filter(Album.id == album_id).all()[0]
+        if cancion is not None and album is not None:
             album.canciones.append(cancion)
             session.commit()
             return True
@@ -182,8 +182,8 @@ class Coleccion():
 
     def asociarInterprete(self, cancion_id, interprete_id):
         cancion = session.query(Cancion).filter(Cancion.id == cancion_id).all()[0]
-        if cancion is not None:
-            interprete = session.query(Interprete).filter(Interprete.id == interprete_id).all()[0]
+        interprete = session.query(Interprete).filter(Interprete.id == interprete_id).all()[0]
+        if cancion is not None and interprete is not None:
             interprete.cancion = cancion_id
             session.commit()
             return True
