@@ -182,9 +182,9 @@ class Coleccion():
 
     def asociarInterprete(self, cancion_id, interprete_id):
         cancion = session.query(Cancion).filter(Cancion.id == cancion_id).all()[0]
-        interprete = session.query(Interprete).filter(Interprete.id == interprete_id).all()[0]
+        interprete = session.query(Interprete).filter(Interprete.id == interprete_id).first()
         if cancion is not None and interprete is not None:
-            interprete.cancion = cancion_id
+            cancion.interpretes.append(interprete)
             session.commit()
             return True
         else:
