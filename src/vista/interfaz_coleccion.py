@@ -48,7 +48,6 @@ class App(QApplication):
 
     def mostrar_ventana_interprete(self, n_interprete):
         self.ventana_interprete.show()
-        print(n_interprete)
         self.ventana_interprete.mostrar_interprete(self.logica.darInterpretePorId(n_interprete))
 
     def dar_medios(self):
@@ -111,4 +110,4 @@ class App(QApplication):
 
     def asociar_interprete_a_cancion(self, id_cancion, id_interprete):
         res = self.logica.asociarInterprete(id_cancion, id_interprete)
-        self.ventana_cancion.mostrar_cancion(self.logica.darCancionPorId(id_cancion))
+        self.ventana_cancion.mostrar_cancion(self.logica.darCancionPorId(id_cancion), self.logica.darInterpretesDe)

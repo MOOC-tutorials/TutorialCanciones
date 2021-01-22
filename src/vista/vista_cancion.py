@@ -76,10 +76,11 @@ class Ventana_Cancion(QWidget):
         self.distr_cancion.addWidget(self.caja_datos)
         self.distr_cancion.addWidget(self.caja_botones)
         
-    def mostrar_cancion(self, cancion):
+    def mostrar_cancion(self, cancion, interpretes=[]):
+        print(cancion)
         self.cancion_actual = cancion
         self.texto_cancion.setText(cancion["titulo"])
-        self.texto_interpretes.setText(cancion.get("interpretes",";".join(cancion.get("interpretes",[]))))
+        self.texto_interpretes.setText(cancion.get("interpretes",";".join(interpretes)))
         self.texto_minutos.setText(str(cancion["minutos"]))
         self.texto_segundos.setText(str(cancion["segundos"]))
         self.texto_compositor.setText(cancion["compositor"])
