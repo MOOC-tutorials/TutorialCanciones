@@ -35,7 +35,7 @@ class Coleccion():
     def darCancionPorId(self, cancion_id):
         cancion = session.query(Cancion).filter_by(id=cancion_id).first()
         cancion_dict = cancion.__dict__
-        cancion_dict["interpretes"] = [self.darInterpretePorId(interprete.id) for interprete in cancion.interpretes] 
+        cancion_dict["interpretes"] = [self.darInterpretePorId(interprete.id) for interprete in cancion.interpretes]
         return cancion_dict
 
     def buscarAlbumesPorTitulo(self, album_titulo):
