@@ -41,7 +41,8 @@ class Ventana_Lista_Canciones(QWidget):
         self.boton_buscar.clicked.connect(self.buscar)
 
         self.boton_nuevo = QPushButton("Nuevo")
-        self.boton_nuevo.clicked.connect(self.mostrar_dialogo_nueva_cancion)
+        #self.boton_nuevo.clicked.connect(self.mostrar_dialogo_nueva_cancion)
+        self.boton_nuevo.clicked.connect(self.agregar_nueva_cancion)
 
         self.boton_albumes = QPushButton("Ver Álbumes")
         self.boton_albumes.clicked.connect(self.ver_albumes)
@@ -116,6 +117,9 @@ class Ventana_Lista_Canciones(QWidget):
     def borrar_cancion(self, id_cancion):
         self.interfaz.eliminar_cancion(id_cancion)
 
+    def agregar_nueva_cancion(self):
+        self.hide()
+        self.interfaz.mostrar_ventana_cancion(nueva=True)
 
     def mostrar_dialogo_nueva_cancion(self):
             self.dialogo_nueva_cancion = QDialog(self)

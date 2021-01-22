@@ -1,5 +1,5 @@
 
-from PyQt5.QtWidgets import QScrollArea, QPlainTextEdit, QComboBox, QDialog, QWidget, QPushButton, QHBoxLayout, QGroupBox, QGridLayout, QLabel, QLineEdit, QVBoxLayout
+from PyQt5.QtWidgets import QMessageBox, QScrollArea, QPlainTextEdit, QComboBox, QDialog, QWidget, QPushButton, QHBoxLayout, QGroupBox, QGridLayout, QLabel, QLineEdit, QVBoxLayout
 from PyQt5.QtGui import QFont
 from PyQt5 import QtCore
 
@@ -18,6 +18,9 @@ class Ventana_Cancion(QWidget):
         self.inicializar_ventana()
 
     def inicializar_ventana(self):
+        self.cancion_actual = None
+        self.interpretes = []
+
         self.setWindowTitle(self.title)
         self.setFixedSize(self.width, self.height)
 
@@ -54,11 +57,11 @@ class Ventana_Cancion(QWidget):
         self.caja_botones.setLayout(layout_botones)
 
         self.boton_guardar = QPushButton("Guardar datos editados")
-        self.boton_guardar.clicked.connect(lambda: self.interfaz.guardar_cancion(self.cancion_actual["id"], {"titulo":self.texto_cancion.text(), "minutos":self.texto_minutos.text(),"segundos":self.texto_segundos.text(),"compositor":self.texto_compositor.text()}))
+        self.boton_guardar.clicked.connect(lambda: self.guardar_cancion())
         layout_botones.addWidget(self.boton_guardar)
 
         self.boton_adicionar = QPushButton("Adicionar intérprete")
-        self.boton_adicionar.clicked.connect(self.mostrar_dialogo_crear_interprete)
+        self.boton_adicionar.clicked.connect(lambda: self.mostrar_dialogo_crear_interprete())
         layout_botones.addWidget(self.boton_adicionar)
 
         self.boton_canciones = QPushButton("Ver lista de canciones")
@@ -89,7 +92,24 @@ class Ventana_Cancion(QWidget):
         self.distr_cancion.addWidget(self.caja_datos)
         self.distr_cancion.addWidget(etiqueta_interpretes,  QtCore.Qt.AlignTop | QtCore.Qt.AlignCenter)
         self.distr_cancion.addWidget(self.lista_interpretes)
-        
+
+    def guardar_cancion(self, cancion):
+        print(len(self.interpretes))
+        if len(self.interpretes) == 0:
+            mensaje_error = QMessageBox()
+            mensaje_error.setIcon(QMessageBox.Critical)
+            mensaje_error.setWindowTitle("Error al guardar canción")
+            mensaje_error.setText("La canción debe tener al menos un intérprete")
+            mensaje_error.setStandardButtons(QMessageBox.Ok)
+            mensaje_error.exec_()
+        else:
+            if self.cancion_actual == None:
+                interfaz.crear_cancion(cancion, self.interpretes)
+            else:
+                for interprete in self.interpretes:
+                    if interprete["id"] == "n":
+                        interfaz
+                interfaz.guardar_cancion(cancion)
 
     def limpiar_interpretes(self):
         while self.caja_interpretes.layout().count() > 2:
@@ -97,19 +117,10 @@ class Ventana_Cancion(QWidget):
             if child.widget():
                 child.widget().deleteLater()
 
-
-    def mostrar_cancion(self, cancion, interpretes=[]):
-        self.cancion_actual = cancion
-        self.texto_cancion.setText(cancion["titulo"])
-        self.texto_minutos.setText(str(cancion["minutos"]))
-        self.texto_segundos.setText(str(cancion["segundos"]))
-        self.texto_compositor.setText(cancion["compositor"])
+    def mostrar_interpretes(self, interpretes):
+        fila = 1
         self.limpiar_interpretes()
-        fila=1
-
-        
-
-        for interprete in cancion.get("interpretes",[]):
+        for i, interprete in enumerate(interpretes):
             campo_nombre = QLineEdit(interprete["nombre"])
             campo_nombre.setFixedWidth(300)
             campo_nombre.setReadOnly(True)
@@ -120,7 +131,7 @@ class Ventana_Cancion(QWidget):
             self.caja_interpretes.layout().addWidget(campo_nombre,fila,0, QtCore.Qt.AlignTop | QtCore.Qt.AlignCenter)
             boton_ver = QPushButton("Ver")
             boton_ver.setFixedSize(50,25)
-            boton_ver.clicked.connect(lambda estado, x=interprete["id"]: self.ver_interprete(x))
+            boton_ver.clicked.connect(lambda estado, n_interprete=i: self.mostrar_dialogo_crear_interprete(n_interprete))
             widget_botones.layout().addWidget(boton_ver,fila,0, QtCore.Qt.AlignTop | QtCore.Qt.AlignCenter)
             boton_borrar = QPushButton("Borrar")
             boton_borrar.setFixedWidth(50)
@@ -135,11 +146,24 @@ class Ventana_Cancion(QWidget):
             fila+=1
         self.caja_interpretes.layout().setRowStretch(fila, 1)
 
+    def mostrar_cancion(self, cancion, interpretes=[]):
+        self.cancion_actual = cancion
+        self.interpretes = interpretes
+        self.texto_cancion.setText(cancion["titulo"])
+        self.texto_minutos.setText(str(cancion["minutos"]))
+        self.texto_segundos.setText(str(cancion["segundos"]))
+        self.texto_compositor.setText(cancion["compositor"])
+        
+        
+        self.mostrar_interpretes(interpretes)
+        
+
     def ver_canciones(self):
         self.interfaz.mostrar_ventana_lista_canciones()
         self.hide()
 
-    def mostrar_dialogo_crear_interprete(self):
+    def mostrar_dialogo_crear_interprete(self, n_interprete=-1):
+
         self.dialogo_nuevo_interprete = QDialog(self)
 
         layout = QGridLayout()
@@ -148,11 +172,17 @@ class Ventana_Cancion(QWidget):
 
         lab1 = QLabel("Nombre:")
         txt1 = QLineEdit()
+        
         layout.addWidget(lab1,0,0)
         layout.addWidget(txt1,0,1)
         
         lab2 = QLabel("Curiosidades:")
         txt2 = QPlainTextEdit()
+        
+        if n_interprete != -1:
+            txt1.setText(self.interpretes[n_interprete].get("nombre",""))
+            txt2.setPlainText(self.interpretes[n_interprete].get("texto_curiosidades",""))
+
         txt2.setFixedWidth(275)
         layout.addWidget(lab2, 1, 0, 1, 1, QtCore.Qt.AlignTop)
         layout.addWidget(txt2, 1, 1, 1, 4)
@@ -169,18 +199,30 @@ class Ventana_Cancion(QWidget):
 
         layout.addWidget(widget_botones, 4,0,1,2)
 
-        butAceptar.clicked.connect(lambda: self.agregar_interprete(txt1.text(), txt2.toPlainText()))
+        if n_interprete == -1:
+            self.dialogo_nuevo_interprete.setWindowTitle("Añadir nuevo interprete")
+            butAceptar.clicked.connect(lambda: self.agregar_interprete(txt1.text(), txt2.toPlainText()))
+        else:
+            self.dialogo_nuevo_interprete.setWindowTitle("Modificar interprete")
+            butAceptar.clicked.connect(lambda: self.modificar_interprete(n_interprete, txt1.text(), txt2.toPlainText()))
         butCancelar.clicked.connect(lambda: self.dialogo_nuevo_interprete.close())
 
-        self.dialogo_nuevo_interprete.setWindowTitle("Añadir nuevo interprete")
+        
         self.dialogo_nuevo_interprete.exec_()
 
-    def ver_interprete(self, id_interprete):
-        self.interfaz.mostrar_ventana_interprete(id_interprete)
+    def modificar_interprete(self, n_interprete, nombre, texto_curiosidades):
+        self.interpretes[n_interprete]["nombre"] = nombre
+        self.interpretes[n_interprete]["texto_curiosidades"] = texto_curiosidades
+        self.mostrar_interpretes(self.interpretes)
+        self.dialogo_nuevo_interprete.hide()
+
+    def ver_interprete(self, interprete):
+        self.interfaz.mostrar_ventana_interprete(interprete)
         self.hide()
 
     def agregar_interprete(self, nombre, texto_curiosidades):
-        self.interfaz.agregar_interprete(self.cancion_actual['id'], nombre, texto_curiosidades)
+        self.interpretes.append({"id":"n", "nombre":nombre, "texto_curiosidades":texto_curiosidades})
+        self.mostrar_interpretes(self.interpretes)
         self.dialogo_nuevo_interprete.close()
 
     def mostrar_lista_canciones(self):

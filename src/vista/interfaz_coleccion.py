@@ -35,9 +35,10 @@ class App(QApplication):
         self.ventana_lista_canciones.show()
         self.ventana_lista_canciones.mostrar_canciones(self.logica.darCanciones())
 
-    def mostrar_ventana_cancion(self, id_cancion=-1):
+    def mostrar_ventana_cancion(self, id_cancion=-1, nueva=False):
         self.ventana_cancion.show()
-        self.ventana_cancion.mostrar_cancion(self.logica.darCancionPorId(self.ventana_cancion.cancion_actual["id"] if id_cancion==-1 else id_cancion))
+        if not nueva:
+            self.ventana_cancion.mostrar_cancion(self.logica.darCancionPorId(self.ventana_cancion.cancion_actual["id"] if id_cancion==-1 else id_cancion))
 
 
     def mostrar_ventana_buscar(self):
@@ -47,9 +48,9 @@ class App(QApplication):
         self.ventana_lista_interpretes.show()
         self.ventana_lista_interpretes.mostrar_interpretes(self.logica.darInterpretes())
 
-    def mostrar_ventana_interprete(self, id_interprete):
+    def mostrar_ventana_interprete(self, interprete):
         self.ventana_interprete.show()
-        self.ventana_interprete.mostrar_interprete(self.logica.darInterpretePorId(id_interprete))
+        self.ventana_interprete.mostrar_interprete(interprete)
 
     def dar_medios(self):
         return self.logica.darMedios()
@@ -64,8 +65,8 @@ class App(QApplication):
         self.logica.eliminarAlbum(id_album)
         self.ventana_lista_album.mostrar_albums(self.logica.darAlbumes())
 
-    def guardar_cancion(self, n_cancion, nueva_cancion):
-        self.logica.editarCancion(n_cancion, nueva_cancion["titulo"], nueva_cancion["minutos"], nueva_cancion["segundos"], nueva_cancion["compositor"])
+    def guardar_cancion(self, nueva_cancion):
+        self.logica.editarCancion(nueva_cancion["id"], nueva_cancion["titulo"], nueva_cancion["minutos"], nueva_cancion["segundos"], nueva_cancion["compositor"])
 
     def eliminar_cancion(self, id_cancion):
         self.ventana_cancion.hide()

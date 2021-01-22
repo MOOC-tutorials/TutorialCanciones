@@ -48,7 +48,7 @@ class Ventana_Interprete(QWidget):
         layout_botones.addWidget(self.boton_volver)
 
         self.boton_guardar = QPushButton("Guardar datos editados")
-        self.boton_guardar.clicked.connect(lambda: self.interfaz.guardar_interprete(self.interprete_actual["id"], self.texto_interprete.text()))
+        self.boton_guardar.clicked.connect(lambda: self.guardar_interprete(self.texto_interprete.text(), self.texto_interprete.text()))
         layout_botones.addWidget(self.boton_guardar)
 
 
@@ -58,6 +58,13 @@ class Ventana_Interprete(QWidget):
 
         self.distr_interprete.addWidget(self.caja_datos)
         self.distr_interprete.addWidget(self.caja_botones)
+
+    def guardar_interprete(self, nombre, texto_curiosidades):
+        self.interprete_actual["nombre"] = nombre
+        self.interprete_actual["texto_curiosidades"] = texto_curiosidades
+        self.interfaz.mostrar_ventana_cancion()
+        self.hide()
+
 
     def mostrar_interprete(self, interprete):
         self.interprete_actual = interprete
