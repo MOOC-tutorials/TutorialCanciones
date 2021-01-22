@@ -71,7 +71,6 @@ class Ventana_Lista_Album(QWidget):
         self.limpiar_albums()
         self.botones = []
         for i in range(len(albumes)):
-            print(albumes[i])
             texto_titulo = QLineEdit(albumes[i]["titulo"])
             texto_titulo.setReadOnly(True)
             self.caja_albums.layout().addWidget(texto_titulo,i+1,0, QtCore.Qt.AlignTop | QtCore.Qt.AlignCenter)
@@ -142,7 +141,6 @@ class Ventana_Lista_Album(QWidget):
         self.dialogo_nuevo_album.exec_()
 
     def crear_album(self, nuevo_album):
-        print(nuevo_album)
         self.interfaz.crear_album(nuevo_album)
         self.dialogo_nuevo_album.close()
 
