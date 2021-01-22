@@ -116,15 +116,12 @@ class Coleccion():
             return False
 
     def eliminarInterprete(self, interprete_id):
-        interprete = session.query(Interprete).filter(Interprete.id == interprete_id).all()
-        if len(interprete) > 0:
-            if interprete[0].cancion is None:
-                session.delete(interprete[0])
-                session.commit()
-                return True
-            else:
-                return False
-        else:
+        try:
+            interprete = session.query(Interprete).filter(Interprete.id == interprete_id).first()
+            session.delete(interprete)
+            session.commit()
+            return True
+        except:
             return False
 
     def editarAlbum(self, album_id, titulo, anio, descripcion, medio):
