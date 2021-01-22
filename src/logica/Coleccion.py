@@ -126,9 +126,12 @@ class Coleccion():
     def eliminarCancion(self, cancion_id):
         try:
             cancion = session.query(Cancion).filter(Cancion.id == cancion_id).first()
-            session.delete(cancion)
-            session.commit()
-            return True
+            if cancion is not None:
+                session.delete(cancion)
+                session.commit()
+                return True
+            else:
+                return False
         except:
             return False
 
