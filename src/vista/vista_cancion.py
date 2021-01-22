@@ -20,6 +20,7 @@ class Ventana_Cancion(QWidget):
     def inicializar_ventana(self):
         self.cancion_actual = None
         self.interpretes = []
+        self.album = -1
 
         self.setWindowTitle(self.title)
         self.setFixedSize(self.width, self.height)
@@ -93,8 +94,8 @@ class Ventana_Cancion(QWidget):
         self.distr_cancion.addWidget(etiqueta_interpretes,  QtCore.Qt.AlignTop | QtCore.Qt.AlignCenter)
         self.distr_cancion.addWidget(self.lista_interpretes)
 
-    def guardar_cancion(self, cancion):
-        print(len(self.interpretes))
+    def guardar_cancion(self):
+
         if len(self.interpretes) == 0:
             mensaje_error = QMessageBox()
             mensaje_error.setIcon(QMessageBox.Critical)
@@ -104,12 +105,12 @@ class Ventana_Cancion(QWidget):
             mensaje_error.exec_()
         else:
             if self.cancion_actual == None:
-                interfaz.crear_cancion(cancion, self.interpretes)
+                self.interfaz.crear_cancion({"titulo":self.texto_cancion.text(),"minutos":self.texto_minutos.text(), "segundos":self.texto_segundos.text(), "compositor":self.texto_compositor.text()}, self.interpretes, id_album=self.album)
+                if self.album != -1:
+                    self.hide()
+                    self.interfaz.mostrar_ventana_album(self.album)
             else:
-                for interprete in self.interpretes:
-                    if interprete["id"] == "n":
-                        interfaz
-                interfaz.guardar_cancion(cancion)
+                self.interfaz.guardar_cancion(self.cancion_actual)
 
     def limpiar_interpretes(self):
         while self.caja_interpretes.layout().count() > 2:
@@ -146,16 +147,14 @@ class Ventana_Cancion(QWidget):
             fila+=1
         self.caja_interpretes.layout().setRowStretch(fila, 1)
 
-    def mostrar_cancion(self, cancion, interpretes=[]):
-        self.cancion_actual = cancion
-        self.interpretes = interpretes
-        self.texto_cancion.setText(cancion["titulo"])
-        self.texto_minutos.setText(str(cancion["minutos"]))
-        self.texto_segundos.setText(str(cancion["segundos"]))
-        self.texto_compositor.setText(cancion["compositor"])
-        
-        
-        self.mostrar_interpretes(interpretes)
+    def mostrar_cancion(self, cancion=None, interpretes=None):
+        self.cancion_actual = cancion 
+        self.interpretes = interpretes if interpretes is not None else []
+        self.texto_cancion.setText(cancion.get("titulo","") if cancion is not None else "")
+        self.texto_minutos.setText(str(cancion.get("minutos","")) if cancion is not None else "")
+        self.texto_segundos.setText(str(cancion.get("segundos","")) if cancion is not None else "")
+        self.texto_compositor.setText(cancion.get("compositor","") if cancion is not None else "")        
+        self.mostrar_interpretes(self.interpretes)
         
 
     def ver_canciones(self):
@@ -211,9 +210,13 @@ class Ventana_Cancion(QWidget):
         self.dialogo_nuevo_interprete.exec_()
 
     def modificar_interprete(self, n_interprete, nombre, texto_curiosidades):
-        self.interpretes[n_interprete]["nombre"] = nombre
-        self.interpretes[n_interprete]["texto_curiosidades"] = texto_curiosidades
-        self.mostrar_interpretes(self.interpretes)
+        if self.interpretes[n_interprete]["id"]=="n":
+            self.interpretes[n_interprete]["nombre"] = nombre
+            self.interpretes[n_interprete]["texto_curiosidades"] = texto_curiosidades
+            self.mostrar_interpretes(self.interpretes)
+        else:
+            self.interfaz.guardar_interprete(innterpretes[n_interprete])
+        
         self.dialogo_nuevo_interprete.hide()
 
     def ver_interprete(self, interprete):

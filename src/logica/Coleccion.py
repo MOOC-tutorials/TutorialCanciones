@@ -88,7 +88,7 @@ class Coleccion():
                                        albumes=[album])
                 session.add(nuevaCancion)
                 for item in interpretes:
-                    interprete = Interprete(item["nombre"], item["texto_curiosidades"], nuevaCancion.id)
+                    interprete = Interprete(nombre=item["nombre"], texto_curiosidades=item["texto_curiosidades"], cancion=nuevaCancion.id)
                     session.add(interprete)
                     interpretesCancion.append(interprete)
                 nuevaCancion.interpretes=interpretesCancion
@@ -101,7 +101,7 @@ class Coleccion():
             nuevaCancion = Cancion(titulo=titulo, minutos=minutos, segundos=segundos, compositor=compositor)
             session.add(nuevaCancion)
             for item in interpretes:
-                interprete = Interprete(item["nombre"], item["texto_curiosidades"], nuevaCancion.id)
+                interprete = Interprete(nombre=item["nombre"], texto_curiosidades=item["texto_curiosidades"], cancion=nuevaCancion.id)
                 session.add(interprete)
                 interpretesCancion.append(interprete)
             nuevaCancion.interpretes=interpretesCancion

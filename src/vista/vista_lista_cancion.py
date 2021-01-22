@@ -18,6 +18,7 @@ class Ventana_Lista_Canciones(QWidget):
         self.inicializar_ventana()
 
     def inicializar_ventana(self):
+        
         self.setWindowTitle(self.title)
         self.setFixedSize(self.width, self.height)
 

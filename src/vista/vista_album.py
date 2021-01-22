@@ -68,7 +68,7 @@ class Ventana_Album(QWidget):
         
         self.boton_adicionar_nueva_cancion = QPushButton("Agregar nueva canción")
         layout_botones.addWidget(self.boton_adicionar_nueva_cancion)
-        self.boton_adicionar_nueva_cancion.clicked.connect(self.mostrar_dialogo_nueva_cancion)
+        self.boton_adicionar_nueva_cancion.clicked.connect(self.crear_cancion)
         self.boton_adicionar_cancion_existente = QPushButton("Agregar canción existente")
         self.boton_adicionar_cancion_existente.clicked.connect(self.mostrar_dialogo_agregar_cancion)
         layout_botones.addWidget(self.boton_adicionar_cancion_existente)
@@ -151,48 +151,6 @@ class Ventana_Album(QWidget):
         self.interfaz.mostrar_ventana_lista_albums()
         self.hide()
 
-    def mostrar_dialogo_nueva_cancion(self):
-        self.dialogo_nueva_cancion = QDialog(self)
-        
-        layout = QGridLayout()
-        self.dialogo_nueva_cancion.setLayout(layout)
-
-        lab1 = QLabel("Título")
-        txt1 = QLineEdit()
-        layout.addWidget(lab1,0,0)
-        layout.addWidget(txt1,0,1,1,3)
-
-        lab2 = QLabel("Duración")
-        txt2_1 = QLineEdit(maxLength=2)
-        txt2_2 = QLineEdit(maxLength=2)
-        layout.addWidget(lab2,1,0)
-        layout.addWidget(txt2_1,1,1)
-        layout.addWidget(QLabel(":"), 1,2)
-        layout.addWidget(txt2_2,1,3)
-
-        lab3 = QLabel("Compositor")
-        txt3 = QLineEdit()
-        layout.addWidget(lab3,2,0)
-        layout.addWidget(txt3,2,1,1,3)
-
-        butAceptar = QPushButton("Aceptar")
-        butCancelar = QPushButton("Cancelar")
-        
-        caja_botones = QWidget()
-        caja_botones.setLayout(QGridLayout())
-
-        caja_botones.layout().addWidget(butAceptar,0,0, QtCore.Qt.AlignTop | QtCore.Qt.AlignCenter)
-        caja_botones.layout().addWidget(butCancelar,0,1, QtCore.Qt.AlignTop | QtCore.Qt.AlignCenter)
-        
-        layout.addWidget(caja_botones, 3, 0, 1, 4, QtCore.Qt.AlignTop | QtCore.Qt.AlignCenter )
-
-        butAceptar.clicked.connect(lambda: self.crear_cancion( {"Titulo":txt1.text(),"Interpretes":"", "Minutos":txt2_1.text(),"Segundos":txt2_2.text(),"Compositor":txt3.text()}))
-        butCancelar.clicked.connect(lambda: self.dialogo_nueva_cancion.close())
-
-        self.dialogo_nueva_cancion.setWindowTitle("Añadir nueva canción")
-        self.dialogo_nueva_cancion.exec_()
-        self.dialogo_nueva_cancion.close()
-
     def crear_cancion(self, nueva_cancion):
         self.interfaz.crear_cancion(nueva_cancion, self.album_actual["id"])
 
@@ -235,3 +193,5 @@ class Ventana_Album(QWidget):
         self.interfaz.asociar_cancion(self.album_actual["id"], id_cancion)
         self.dialogo_agregar_cancion.close()
         
+    def crear_cancion(self):
+        self.interfaz.mostrar_ventana_cancion(nueva=True, album=self.album_actual["id"])

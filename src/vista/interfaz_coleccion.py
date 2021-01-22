@@ -35,22 +35,17 @@ class App(QApplication):
         self.ventana_lista_canciones.show()
         self.ventana_lista_canciones.mostrar_canciones(self.logica.darCanciones())
 
-    def mostrar_ventana_cancion(self, id_cancion=-1, nueva=False):
-        self.ventana_cancion.show()
-        if not nueva:
-            self.ventana_cancion.mostrar_cancion(self.logica.darCancionPorId(self.ventana_cancion.cancion_actual["id"] if id_cancion==-1 else id_cancion))
+    def mostrar_ventana_cancion(self, nueva=False, album=-1):
 
+        self.ventana_cancion.album = album
+        if not nueva:
+            self.ventana_cancion.mostrar_cancion(self.logica.darCancionPorId(self.ventana_cancion.cancion_actual["id"]))
+        else:
+            self.ventana_cancion.mostrar_cancion()
+        self.ventana_cancion.show()
 
     def mostrar_ventana_buscar(self):
         self.ventana_buscar.show()
-
-    def mostrar_ventana_lista_interpretes(self):
-        self.ventana_lista_interpretes.show()
-        self.ventana_lista_interpretes.mostrar_interpretes(self.logica.darInterpretes())
-
-    def mostrar_ventana_interprete(self, interprete):
-        self.ventana_interprete.show()
-        self.ventana_interprete.mostrar_interprete(interprete)
 
     def dar_medios(self):
         return self.logica.darMedios()
@@ -65,7 +60,7 @@ class App(QApplication):
         self.logica.eliminarAlbum(id_album)
         self.ventana_lista_album.mostrar_albums(self.logica.darAlbumes())
 
-    def guardar_cancion(self, nueva_cancion):
+    def guardar_cancion(self, nueva_cancion, interpretes):
         self.logica.editarCancion(nueva_cancion["id"], nueva_cancion["titulo"], nueva_cancion["minutos"], nueva_cancion["segundos"], nueva_cancion["compositor"])
 
     def eliminar_cancion(self, id_cancion):
@@ -77,25 +72,19 @@ class App(QApplication):
         self.logica.agregarAlbum(nuevo_album["titulo"], nuevo_album["ano"], nuevo_album["descripcion"], nuevo_album["medio"])
         self.ventana_lista_album.mostrar_albums(self.logica.darAlbumes())
 
-    def guardar_interprete(self, n_interprete, nuevo_interprete):
-        self.logica.editarInterprete(n_interprete, nuevo_interprete)
-        self.ventana_interprete.hide()
+    def guardar_interprete(self, nuevo_interprete):
+        self.logica.editarInterprete(n_interprete["id"], nuevo_interprete["nombre"], nuevo_interprete["texto_curiosidades"])
         self.mostrar_ventana_lista_interpretes()
-    
-    def eliminar_interprete(self, n_interprete):
-        self.logica.eliminarInterprete(n_interprete)
-        self.mostrar_ventana_cancion()
 
     def crear_interprete(self, nuevo_interprete):
         self.logica.agregarInterprete(nuevo_interprete)
         self.mostrar_ventana_lista_interpretes()
 
-    def crear_cancion(self, nueva_cancion, id_album=-1):
+    def crear_cancion(self, nueva_cancion, interpretes, id_album=-1):
         if id_album == -1:
-            self.logica.agregarCancion(nueva_cancion["Titulo"],nueva_cancion["Minutos"], nueva_cancion["Segundos"], nueva_cancion["Compositor"])
-            self.mostrar_ventana_lista_canciones()
+            self.logica.agregarCancion(nueva_cancion["titulo"],nueva_cancion["minutos"], nueva_cancion["segundos"], nueva_cancion["compositor"], id_album, interpretes)
         else:
-            self.logica.agregarCancion(nueva_cancion["Titulo"],nueva_cancion["Minutos"], nueva_cancion["Segundos"], nueva_cancion["Compositor"], id_album)
+            self.logica.agregarCancion(nueva_cancion["titulo"],nueva_cancion["minutos"], nueva_cancion["segundos"], nueva_cancion["compositor"], id_album, interpretes)
 
     def mostrar_resultados_albumes(self, nombre_album):
         albumes = self.logica.buscarAlbumesPorTitulo(nombre_album)
