@@ -88,10 +88,10 @@ class Coleccion():
         session.commit()
         return True
 
-    def agregarInterprete(self, nombre):
+    def agregarInterprete(self, nombre, texto_curiosidades, cancion_id):
         interprete = session.query(Interprete).filter(Interprete.nombre == nombre).all()
         if len(interprete) == 0:
-            nuevoInterprete = Interprete(nombre=nombre)
+            nuevoInterprete = Interprete(nombre=nombre, texto_curiosidades=texto_curiosidades, cancion=cancion_id)
             session.add(nuevoInterprete)
             session.commit()
             return True
@@ -144,25 +144,38 @@ class Coleccion():
         except:
             return False
 
-    def editarCancion(self, cancion_id, titulo, minutos, segundos, compositor, interpretes):
+    def editarCancion(self, cancion_id, titulo, minutos, segundos, compositor, interpretes_id):
         cancion = session.query(Cancion).filter(Cancion.id == cancion_id).all()[0]
         cancion.titulo = titulo
         cancion.minutos = minutos
         cancion.segundos = segundos
         cancion.compositor = compositor
         interpretesCancion = []
-        for item["id"] in interpretes:
+        for item in interpretes_id:
             interprete = session.query(Interprete).filter(Interprete.id == item).all()[0]
             interpretesCancion.append(interprete)
         cancion.interpretes = interpretesCancion
         session.commit()
         return True
 
-    def editarInterprete(self, interprete_id, nombre):
+    def editarCancion(self, cancion_id, titulo, minutos, segundos, compositor):
+        try:
+            cancion = session.query(Cancion).filter(Cancion.id == cancion_id).first()
+            cancion.titulo = titulo
+            cancion.minutos = minutos
+            cancion.segundos = segundos
+            cancion.compositor = compositor
+            session.commit()
+            return True
+        except:
+            return False
+
+    def editarInterprete(self, interprete_id, nombre, texto_curiosidades):
         busqueda = session.query(Interprete).filter(Interprete.id != interprete_id, Interprete.nombre == nombre).all()
         if len(busqueda) == 0:
             interprete = session.query(Interprete).filter(Interprete.id == interprete_id).all()[0]
             interprete.nombre = nombre
+            interprete.texto_curiosidades = texto_curiosidades
             session.commit()
             return True
         else:
