@@ -69,7 +69,7 @@ class Ventana_Lista_Album(QWidget):
             texto_titulo.setReadOnly(True)
             self.caja_albums.layout().addWidget(texto_titulo,i,0, QtCore.Qt.AlignTop | QtCore.Qt.AlignCenter)
 
-            texto_interpretes = QLineEdit(album.get("interpretes",""))
+            texto_interpretes = QLineEdit(";".join(album.get("interpretes",[])))
             texto_interpretes.setReadOnly(True)
             self.caja_albums.layout().addWidget(texto_interpretes,i,1, QtCore.Qt.AlignTop | QtCore.Qt.AlignCenter)
 

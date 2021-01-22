@@ -11,6 +11,8 @@ class Coleccion():
 
     def darAlbumes(self):
         albumes = [elem.__dict__ for elem in session.query(Album).all()]
+        for album in albumes:
+            album["interpretes"] = self.darInterpretesDeAlbum(album["id"])
         return albumes
 
     def darCancionesDeAlbum(self, album_id):
@@ -75,22 +77,29 @@ class Coleccion():
         except:
             return False
 
-    def agregarCancion(self, titulo, minutos, segundos, compositor, album_id=-1):
+    def agregarCancion(self, titulo, minutos, segundos, compositor, album_id, interpretes_id):
         interpretesCancion = []
         if album_id > 0:
             busqueda = session.query(Cancion).filter(Cancion.albumes.any(Album.id.in_([album_id])),
                                                      Cancion.titulo == titulo).all()
             if len(busqueda) == 0:
                 album = session.query(Album).filter(Album.id == album_id).first()
+                for item in interpretes_id:
+                    interprete = session.query(Interprete).filter(Interprete.id == item).first()
+                    interpretesCancion.append(interprete)
                 nuevaCancion = Cancion(titulo=titulo, minutos=minutos, segundos=segundos, compositor=compositor,
-                                       albumes=[album])
+                                       albumes=[album], interpretes=interpretesCancion)
                 session.add(nuevaCancion)
                 session.commit()
                 return True
             else:
                 return False
         else:
-            nuevaCancion = Cancion(titulo=titulo, minutos=minutos, segundos=segundos, compositor=compositor)
+            for item in interpretes_id:
+                interprete = session.query(Interprete).filter(Interprete.id == item).first()
+                interpretesCancion.append(interprete)
+            nuevaCancion = Cancion(titulo=titulo, minutos=minutos, segundos=segundos, compositor=compositor,
+                                   interpretes=interpretesCancion)
             session.add(nuevaCancion)
             session.commit()
             return True
