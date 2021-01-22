@@ -33,7 +33,10 @@ class Coleccion():
         return session.query(Interprete).filter_by(id=interprete_id).first().__dict__
 
     def darCancionPorId(self, cancion_id):
-        return session.query(Cancion).filter_by(id=cancion_id).first().__dict__
+        cancion = session.query(Cancion).filter_by(id=cancion_id).first()
+        cancion_dict = cancion.__dict__
+        cancion_dict["interpretes"] = [self.darInterpretePorId(interprete.id) for interprete in cancion.interpretes] 
+        return cancion_dict
 
     def buscarAlbumesPorTitulo(self, album_titulo):
         albumes = [elem.__dict__ for elem in
@@ -182,7 +185,6 @@ class Coleccion():
             return False
 
     def asociarInterprete(self, cancion_id, interprete_id):
-        print(cancion_id, interprete_id)
         cancion = session.query(Cancion).filter(Cancion.id == cancion_id).first()
         interprete = session.query(Interprete).filter(Interprete.id == interprete_id).first()
         if cancion is not None and interprete is not None:
