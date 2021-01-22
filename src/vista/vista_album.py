@@ -32,15 +32,28 @@ class Ventana_Album(QWidget):
         layout_datos = QGridLayout()
         self.caja_datos.setLayout(layout_datos)
     
+        etiqueta_titulo = QLabel("Título")
+        etiqueta_titulo.setFont(QFont("Times",weight=QFont.Bold))
+        layout_datos.addWidget(etiqueta_titulo, 0, 0)
+
+        etiqueta_ano = QLabel("Año")
+        etiqueta_ano.setFont(QFont("Times",weight=QFont.Bold))
+        layout_datos.addWidget(etiqueta_ano, 1, 0)
+
+        etiqueta_descripcion = QLabel("Descripción")
+        etiqueta_descripcion.setFont(QFont("Times",weight=QFont.Bold))
+        layout_datos.addWidget(etiqueta_descripcion, 2, 0)
+
+        etiqueta_medio = QLabel("Medio")
+        etiqueta_medio.setFont(QFont("Times",weight=QFont.Bold))      
+        layout_datos.addWidget(etiqueta_medio, 3, 0)
+
         self.texto_album = QLineEdit()
         layout_datos.addWidget(self.texto_album, 0, 1)
-
         self.texto_anio = QLineEdit()
         layout_datos.addWidget(self.texto_anio, 1, 1)
-
         self.texto_descripcion = QLineEdit()
         layout_datos.addWidget(self.texto_descripcion, 2, 1)
-
         self.lista_medios = QComboBox()
         self.lista_medios.addItems(self.interfaz.dar_medios())
         layout_datos.addWidget(self.lista_medios, 3, 1)
@@ -79,7 +92,7 @@ class Ventana_Album(QWidget):
         self.caja_canciones.setLayout(QGridLayout())
         self.lista_canciones.setWidget(self.caja_canciones)
 
-        self.titulos_cancion = ["Título de la canción", "Intérpretes", "Duración", "Acciones"]
+        self.titulos_cancion = ["Título de la canción", "Compositor", "Duración", "Acciones"]
         for i in range(len(self.titulos_cancion)):
             etiqueta = QLabel(self.titulos_cancion[i])
             etiqueta.setFont(QFont("Times",weight=QFont.Bold))
@@ -107,22 +120,27 @@ class Ventana_Album(QWidget):
     def mostrar_canciones(self, canciones):
         self.limpiar_canciones()
         self.botones = []
-        for i in range(len(canciones)):
-            texto_titulo = QLineEdit(canciones[i]["Titulo"])
+        fila = 1
+        for cancion in canciones:
+            print(cancion)
+            texto_titulo = QLineEdit(cancion["titulo"])
             texto_titulo.setReadOnly(True)
-            self.caja_canciones.layout().addWidget(texto_titulo,i+1,0)
+            self.caja_canciones.layout().addWidget(texto_titulo,fila,0)
 
-            texto_interpretes = QLineEdit(canciones[i]["Intérpretes"])
+            texto_interpretes = QLineEdit(cancion["compositor"])
             texto_interpretes.setReadOnly(True)
-            self.caja_canciones.layout().addWidget(texto_interpretes,i+1,1)
+            self.caja_canciones.layout().addWidget(texto_interpretes,fila,1)
             
-            texto_duracion = QLineEdit(canciones[i]["Duracion"])
+            texto_duracion = QLineEdit("{}:{}".format(cancion["minutos"],cancion["segundos"]))
             texto_duracion.setReadOnly(True)
-            self.caja_canciones.layout().addWidget(texto_duracion,i+1,2)
+            self.caja_canciones.layout().addWidget(texto_duracion,fila,2)
             
-            self.botones.append(QPushButton("Quitar"))
-            self.botones[i].clicked.connect(lambda estado, x=canciones[i]["id"]: self.interfaz.quitar_cancion_de_album(x))
-            self.caja_canciones.layout().addWidget(self.botones[i],i+1,3)
+            boton_quitar = QPushButton("Quitar")
+            boton_quitar.clicked.connect(lambda estado, x=cancion: self.interfaz.quitar_cancion_de_album(x))
+            self.caja_canciones.layout().addWidget(boton_quitar,fila,3)
+            fila+=1
+
+        self.caja_canciones.layout().setRowStretch(fila, 1)
 
     def guardar_album(self):
         album_modificado = {"titulo":self.texto_album.text(),"interpretes":self.texto_descripcion.text(), "medio":self.lista_medios.currentText(),"ano":self.texto_anio.text(),"descripcion":self.texto_descripcion.text()}
@@ -179,5 +197,5 @@ class Ventana_Album(QWidget):
         self.dialogo_nueva_cancion.close()
 
     def crear_cancion(self, nueva_cancion):
-        self.interfaz.crear_cancion(nueva_cancion)
+        self.interfaz.crear_cancion(nueva_cancion, self.album_actual["id"])
         

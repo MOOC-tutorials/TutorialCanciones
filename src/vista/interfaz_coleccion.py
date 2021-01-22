@@ -89,11 +89,12 @@ class App(QApplication):
         self.logica.agregarInterprete(nuevo_interprete)
         self.mostrar_ventana_lista_interpretes()
 
-    def crear_cancion(self, nueva_cancion):
-        self.logica.agregarCancion(nueva_cancion["Titulo"],nueva_cancion["Minutos"], nueva_cancion["Segundos"], nueva_cancion["Compositor"])
-
-    def asociar_cancion(self, id_cancion, id_album)
-
+    def crear_cancion(self, nueva_cancion, id_album=-1):
+        if id_album == -1:
+            self.logica.agregarCancion(nueva_cancion["Titulo"],nueva_cancion["Minutos"], nueva_cancion["Segundos"], nueva_cancion["Compositor"])
+            self.interfaz.mostrar_ventana_lista_canciones()
+        else:
+            self.logica.agregarCancion(nueva_cancion["Titulo"],nueva_cancion["Minutos"], nueva_cancion["Segundos"], nueva_cancion["Compositor"], id_album)
 
     def mostrar_resultados_albumes(self, nombre_album):
         albumes = self.logica.buscarAlbumesPorTitulo(nombre_album)

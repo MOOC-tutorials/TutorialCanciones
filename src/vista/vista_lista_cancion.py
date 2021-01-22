@@ -30,7 +30,7 @@ class Ventana_Lista_Canciones(QWidget):
         layout_canciones = QGridLayout()
         self.caja_canciones.setLayout(layout_canciones)
 
-        self.titulos = ["Título de la canción", "Intérpretes", "Duración", "Acciones"]
+        self.titulos = ["Título de la canción", "Compositor", "Duración", "Acciones"]
         for i in range(len(self.titulos)):
             etiqueta = QLabel(self.titulos[i])
             etiqueta.setFont(QFont("Times",weight=QFont.Bold))
@@ -79,7 +79,7 @@ class Ventana_Lista_Canciones(QWidget):
             texto_titulo.setReadOnly(True)
             self.caja_canciones.layout().addWidget(texto_titulo,i,0, QtCore.Qt.AlignTop | QtCore.Qt.AlignCenter)
 
-            texto_interpretes = QLineEdit(cancion.get("interpretes",""))
+            texto_interpretes = QLineEdit(cancion.get("compositor",cancion["compositor"]))
             texto_interpretes.setReadOnly(True)
             self.caja_canciones.layout().addWidget(texto_interpretes,i,1, QtCore.Qt.AlignTop | QtCore.Qt.AlignCenter)
             
@@ -157,7 +157,7 @@ class Ventana_Lista_Canciones(QWidget):
     def crear_cancion(self, dict_cancion):
         self.dialogo_nueva_cancion.close()
         self.interfaz.crear_cancion(dict_cancion)
-        self.interfaz.mostrar_ventana_lista_canciones()
+        
         
 
     def ver_interpretes(self):
