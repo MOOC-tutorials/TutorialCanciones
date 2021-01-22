@@ -65,16 +65,13 @@ class Ventana_Album(QWidget):
         self.boton_guardar = QPushButton("Guardar datos editados")
         self.boton_guardar.clicked.connect(self.guardar_album)
         layout_botones.addWidget(self.boton_guardar)
-
-        self.boton_borrar = QPushButton("Borrar")
-        self.boton_borrar.clicked.connect(self.eliminar_album)
-        layout_botones.addWidget(self.boton_borrar)
         
-        self.boton_adicionar = QPushButton("Nueva canción")
-        layout_botones.addWidget(self.boton_adicionar)
-        self.boton_adicionar.clicked.connect(self.mostrar_dialogo_nueva_cancion)
-        self.boton_adicionar = QPushButton("Canción existente")
-        layout_botones.addWidget(self.boton_adicionar)
+        self.boton_adicionar_nueva_cancion = QPushButton("Agregar nueva canción")
+        layout_botones.addWidget(self.boton_adicionar_nueva_cancion)
+        self.boton_adicionar_nueva_cancion.clicked.connect(self.mostrar_dialogo_nueva_cancion)
+        self.boton_adicionar_cancion_existente = QPushButton("Agregar canción existente")
+        self.boton_adicionar_cancion_existente.clicked.connect(self.mostrar_dialogo_agregar_cancion)
+        layout_botones.addWidget(self.boton_adicionar_cancion_existente)
 
         self.caja_album.layout().addWidget(self.caja_datos)
         self.caja_album.layout().addWidget(self.caja_botones)
@@ -198,4 +195,43 @@ class Ventana_Album(QWidget):
 
     def crear_cancion(self, nueva_cancion):
         self.interfaz.crear_cancion(nueva_cancion, self.album_actual["id"])
+
+    def mostrar_dialogo_agregar_cancion(self):
+        self.dialogo_agregar_cancion = QDialog(self)
+        
+        layout = QGridLayout()
+        self.dialogo_agregar_cancion.setLayout(layout)
+
+        lab1 = QLabel("Canciones")
+        layout.addWidget(lab1,0,0)
+
+
+        lista_canciones = QComboBox()
+        for cancion in self.interfaz.dar_canciones():
+            print(cancion)
+            lista_canciones.addItem("{}".format(cancion["titulo"]), cancion["id"] )
+            print(cancion["id"])
+        layout.addWidget(lista_canciones,1,0)
+
+        butAceptar = QPushButton("Agregar")
+        butCancelar = QPushButton("Cancelar")
+        
+        caja_botones = QWidget()
+        caja_botones.setLayout(QGridLayout())
+
+        caja_botones.layout().addWidget(butAceptar,0,0, QtCore.Qt.AlignTop | QtCore.Qt.AlignCenter)
+        caja_botones.layout().addWidget(butCancelar,0,1, QtCore.Qt.AlignTop | QtCore.Qt.AlignCenter)
+        
+        layout.addWidget(caja_botones, 3, 0, QtCore.Qt.AlignTop | QtCore.Qt.AlignCenter )
+
+        butAceptar.clicked.connect(lambda: self.asociar_cancion_a_album( lista_canciones.currentData()))
+        butCancelar.clicked.connect(lambda: self.dialogo_agregar_cancion.close())
+
+        self.dialogo_agregar_cancion.setWindowTitle("Añadir nueva canción")
+        self.dialogo_agregar_cancion.exec_()
+        self.dialogo_agregar_cancion.close()
+    
+    def asociar_cancion_a_album(self, id_cancion):
+        self.interfaz.asociar_cancion(self.album_actual["id"], id_cancion)
+        self.dialogo_agregar_cancion.close()
         

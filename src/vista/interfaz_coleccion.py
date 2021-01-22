@@ -60,9 +60,9 @@ class App(QApplication):
     def guardar_album(self, n_album, nuevo_album):
         self.logica.editarAlbum(n_album, nuevo_album["titulo"], nuevo_album["ano"], nuevo_album["descripcion"], nuevo_album["medio"])
 
-    def eliminar_album(self, n_album):
-        self.mock_albums.pop(n_album)
-        self.ventana_album.mostrar_album(0, self.mock_albums[0])
+    def eliminar_album(self, id_album):
+        self.logica.eliminarAlbum(id_album)
+        self.ventana_lista_album.mostrar_albums(self.logica.darAlbumes())
 
     def guardar_cancion(self, n_cancion, nueva_cancion):
         self.logica.editarCancion(n_cancion, nueva_cancion["titulo"], nueva_cancion["minutos"], nueva_cancion["segundos"], nueva_cancion["compositor"])
@@ -92,7 +92,7 @@ class App(QApplication):
     def crear_cancion(self, nueva_cancion, id_album=-1):
         if id_album == -1:
             self.logica.agregarCancion(nueva_cancion["Titulo"],nueva_cancion["Minutos"], nueva_cancion["Segundos"], nueva_cancion["Compositor"])
-            self.interfaz.mostrar_ventana_lista_canciones()
+            self.mostrar_ventana_lista_canciones()
         else:
             self.logica.agregarCancion(nueva_cancion["Titulo"],nueva_cancion["Minutos"], nueva_cancion["Segundos"], nueva_cancion["Compositor"], id_album)
 
@@ -112,7 +112,14 @@ class App(QApplication):
         pass
 
     def agregar_interprete(self,  id_cancion, nombre, texto_curiosidades):
-        print(id_cancion, nombre, texto_curiosidades)
         res = self.logica.agregarInterprete(nombre, texto_curiosidades, id_cancion)
         print(self.logica.darCancionPorId(id_cancion))
         self.ventana_cancion.mostrar_cancion(self.logica.darCancionPorId(id_cancion))
+
+    def asociar_cancion(self, id_album, id_cancion):
+        self.logica.asociarCancion(id_cancion, id_album)
+        self.ventana_album.mostrar_album(self.logica.darAlbumPorId(id_album))
+        self.ventana_album.mostrar_canciones(self.logica.darCancionesDeAlbum(id_album))
+
+    def dar_canciones(self):
+        return self.logica.darCanciones()

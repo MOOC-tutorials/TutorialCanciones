@@ -82,11 +82,7 @@ class Coleccion():
             else:
                 return False
         else:
-            for item in interpretes_id:
-                interprete = session.query(Interprete).filter(Interprete.id == item).first()
-                interpretesCancion.append(interprete)
-            nuevaCancion = Cancion(titulo=titulo, minutos=minutos, segundos=segundos, compositor=compositor,
-                                   interpretes=interpretesCancion)
+            nuevaCancion = Cancion(titulo=titulo, minutos=minutos, segundos=segundos, compositor=compositor)
             session.add(nuevaCancion)
             session.commit()
             return True

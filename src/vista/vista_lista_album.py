@@ -87,7 +87,7 @@ class Ventana_Lista_Album(QWidget):
 
             boton_borrar = QPushButton("Borrar")
             boton_borrar.setFixedSize(50,25)
-            #self.botones[i].clicked.connect(lambda estado, x=albumes[i]["id"]: self.ver_album(x))
+            boton_borrar.clicked.connect(lambda estado, x=album["id"]: self.interfaz.eliminar_album(x))
             widget_botones.layout().addWidget(boton_borrar,0,1 )
 
             widget_botones.layout().setContentsMargins(0,0,0,0)
