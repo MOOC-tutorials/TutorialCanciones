@@ -67,7 +67,7 @@ class Coleccion():
         except:
             return False
 
-    def agregarCancion(self, titulo, minutos, segundos, compositor, album_id, interpretes_id):
+    def agregarCancion(self, titulo, minutos, segundos, compositor, album_id=-1):
         busqueda = session.query(Cancion).filter(Cancion.albumes.any(Album.id.in_([album_id])),
                                                  Cancion.titulo == titulo).all()
         if len(busqueda) == 0:
@@ -81,7 +81,7 @@ class Coleccion():
             session.add(nuevaCancion)
             session.commit()
             return True
-        else:
+        else:            
             return False
 
     def agregarCancion(self, titulo, minutos, segundos, compositor):

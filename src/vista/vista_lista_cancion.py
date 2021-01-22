@@ -157,6 +157,7 @@ class Ventana_Lista_Canciones(QWidget):
     def crear_cancion(self, dict_cancion):
         self.dialogo_nueva_cancion.close()
         self.interfaz.crear_cancion(dict_cancion)
+        self.interfaz.mostrar_ventana_lista_canciones()
         
 
     def ver_interpretes(self):

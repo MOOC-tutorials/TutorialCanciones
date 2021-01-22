@@ -91,7 +91,9 @@ class App(QApplication):
 
     def crear_cancion(self, nueva_cancion):
         self.logica.agregarCancion(nueva_cancion["Titulo"],nueva_cancion["Minutos"], nueva_cancion["Segundos"], nueva_cancion["Compositor"])
-        self.mostrar_ventana_lista_canciones()
+
+    def asociar_cancion(self, id_cancion, id_album)
+
 
     def mostrar_resultados_albumes(self, nombre_album):
         albumes = self.logica.buscarAlbumesPorTitulo(nombre_album)

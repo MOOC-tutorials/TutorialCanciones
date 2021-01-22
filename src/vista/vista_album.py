@@ -163,9 +163,14 @@ class Ventana_Album(QWidget):
         butAceptar = QPushButton("Aceptar")
         butCancelar = QPushButton("Cancelar")
         
-        layout.addWidget(butAceptar,4,0)
-        layout.addWidget(butCancelar,4,1)
+        caja_botones = QWidget()
+        caja_botones.setLayout(QGridLayout())
+
+        caja_botones.layout().addWidget(butAceptar,0,0, QtCore.Qt.AlignTop | QtCore.Qt.AlignCenter)
+        caja_botones.layout().addWidget(butCancelar,0,1, QtCore.Qt.AlignTop | QtCore.Qt.AlignCenter)
         
+        layout.addWidget(caja_botones, 3, 0, 1, 4, QtCore.Qt.AlignTop | QtCore.Qt.AlignCenter )
+
         butAceptar.clicked.connect(lambda: self.crear_cancion( {"Titulo":txt1.text(),"Interpretes":"", "Minutos":txt2_1.text(),"Segundos":txt2_2.text(),"Compositor":txt3.text()}))
         butCancelar.clicked.connect(lambda: self.dialogo_nueva_cancion.close())
 
@@ -174,4 +179,5 @@ class Ventana_Album(QWidget):
         self.dialogo_nueva_cancion.close()
 
     def crear_cancion(self, nueva_cancion):
-        pass
+        self.interfaz.crear_cancion(nueva_cancion)
+        
