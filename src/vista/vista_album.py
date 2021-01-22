@@ -66,9 +66,9 @@ class Ventana_Album(QWidget):
         self.caja_album.layout().addWidget(self.caja_datos)
         self.caja_album.layout().addWidget(self.caja_botones)
 
-        self.caja_titulos = QGroupBox()
-        layout_titulos = QGridLayout()
-        self.caja_titulos.setLayout(layout_titulos)
+        self.etiqueta_canciones = QLabel("Canciones")
+        self.etiqueta_canciones.setFont(QFont("Times",weight=QFont.Bold))
+        self.etiqueta_canciones.setAlignment(QtCore.Qt.AlignCenter)
 
         self.boton_albums = QPushButton("Ver lista de albums")
         self.boton_albums.clicked.connect(self.ver_albums)
@@ -87,7 +87,7 @@ class Ventana_Album(QWidget):
             self.caja_canciones.layout().addWidget(etiqueta,0,i, QtCore.Qt.AlignTop | QtCore.Qt.AlignCenter)
 
         self.distr_album.addWidget(self.caja_album)
-        self.distr_album.addWidget(self.caja_titulos)
+        self.distr_album.addWidget(self.etiqueta_canciones)
         self.distr_album.addWidget(self.lista_canciones)
         self.distr_album.addWidget(self.boton_albums)
 

@@ -35,9 +35,10 @@ class App(QApplication):
         self.ventana_lista_canciones.show()
         self.ventana_lista_canciones.mostrar_canciones(self.logica.darCanciones())
 
-    def mostrar_ventana_cancion(self, id_cancion):
+    def mostrar_ventana_cancion(self, id_cancion=-1):
         self.ventana_cancion.show()
-        self.ventana_cancion.mostrar_cancion(self.logica.darCancionPorId(id_cancion))
+        self.ventana_cancion.mostrar_cancion(self.logica.darCancionPorId(self.ventana_cancion.cancion_actual["id"] if id_cancion==-1 else id_cancion))
+
 
     def mostrar_ventana_buscar(self):
         self.ventana_buscar.show()
@@ -46,9 +47,9 @@ class App(QApplication):
         self.ventana_lista_interpretes.show()
         self.ventana_lista_interpretes.mostrar_interpretes(self.logica.darInterpretes())
 
-    def mostrar_ventana_interprete(self, n_interprete):
+    def mostrar_ventana_interprete(self, id_interprete):
         self.ventana_interprete.show()
-        self.ventana_interprete.mostrar_interprete(self.logica.darInterpretePorId(n_interprete))
+        self.ventana_interprete.mostrar_interprete(self.logica.darInterpretePorId(id_interprete))
 
     def dar_medios(self):
         return self.logica.darMedios()
@@ -64,7 +65,7 @@ class App(QApplication):
         self.ventana_album.mostrar_album(0, self.mock_albums[0])
 
     def guardar_cancion(self, n_cancion, nueva_cancion):
-        self.logica.editarCancion(n_cancion, nueva_cancion["titulo"], nueva_cancion["minutos"], nueva_cancion["segundos"], nueva_cancion["compositor"], nueva_cancion["interpretes"])
+        self.logica.editarCancion(n_cancion, nueva_cancion["titulo"], nueva_cancion["minutos"], nueva_cancion["segundos"], nueva_cancion["compositor"])
 
     def eliminar_cancion(self, id_cancion):
         self.ventana_cancion.hide()
@@ -82,8 +83,7 @@ class App(QApplication):
     
     def eliminar_interprete(self, n_interprete):
         self.logica.eliminarInterprete(n_interprete)
-        self.ventana_interprete.hide()
-        self.mostrar_ventana_lista_interpretes()
+        self.mostrar_ventana_cancion()
 
     def crear_interprete(self, nuevo_interprete):
         self.logica.agregarInterprete(nuevo_interprete)
@@ -108,6 +108,8 @@ class App(QApplication):
     def quitar_cancion_de_album(self, id_cancion, id_album):
         pass
 
-    def asociar_interprete_a_cancion(self, id_cancion, id_interprete):
-        res = self.logica.asociarInterprete(id_cancion, id_interprete)
-        self.ventana_cancion.mostrar_cancion(self.logica.darCancionPorId(id_cancion), self.logica.darInterpretesDe)
+    def agregar_interprete(self,  id_cancion, nombre, texto_curiosidades):
+        print(id_cancion, nombre, texto_curiosidades)
+        res = self.logica.agregarInterprete(nombre, texto_curiosidades, id_cancion)
+        print(self.logica.darCancionPorId(id_cancion))
+        self.ventana_cancion.mostrar_cancion(self.logica.darCancionPorId(id_cancion))

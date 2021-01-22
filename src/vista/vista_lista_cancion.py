@@ -35,7 +35,7 @@ class Ventana_Lista_Canciones(QWidget):
             etiqueta = QLabel(self.titulos[i])
             etiqueta.setFont(QFont("Times",weight=QFont.Bold))
             etiqueta.setAlignment(QtCore.Qt.AlignCenter)
-            layout_canciones.addWidget(etiqueta,0,i)
+            layout_canciones.addWidget(etiqueta,0,i,  QtCore.Qt.AlignTop | QtCore.Qt.AlignCenter)
 
         self.boton_buscar = QPushButton("Buscar")
         self.boton_buscar.clicked.connect(self.buscar)
@@ -67,40 +67,46 @@ class Ventana_Lista_Canciones(QWidget):
             child = self.caja_canciones.layout().takeAt(len(self.titulos))
             if child.widget():
                 child.widget().deleteLater()
+            self.caja_canciones.layout().setRowStretch(0,0)
+
 
     def mostrar_canciones(self, canciones):
         self.limpiar_canciones()
         self.botones = []
-        
-        for i in range(len(canciones)):
-            texto_titulo = QLineEdit(canciones[i]["titulo"])
+        i = 1
+        for cancion in canciones:
+            texto_titulo = QLineEdit(cancion["titulo"])
             texto_titulo.setReadOnly(True)
-            self.caja_canciones.layout().addWidget(texto_titulo,i+1,0, QtCore.Qt.AlignTop | QtCore.Qt.AlignCenter)
+            self.caja_canciones.layout().addWidget(texto_titulo,i,0, QtCore.Qt.AlignTop | QtCore.Qt.AlignCenter)
 
-            texto_interpretes = QLineEdit(canciones[i].get("interpretes",""))
+            texto_interpretes = QLineEdit(cancion.get("interpretes",""))
             texto_interpretes.setReadOnly(True)
-            self.caja_canciones.layout().addWidget(texto_interpretes,i+1,1, QtCore.Qt.AlignTop | QtCore.Qt.AlignCenter)
+            self.caja_canciones.layout().addWidget(texto_interpretes,i,1, QtCore.Qt.AlignTop | QtCore.Qt.AlignCenter)
             
-            texto_duracion = QLineEdit("{}:{}".format(canciones[i]["minutos"],canciones[i]["segundos"]))
+            texto_duracion = QLineEdit("{}:{}".format(cancion["minutos"],cancion["segundos"]))
             texto_duracion.setReadOnly(True)
-            self.caja_canciones.layout().addWidget(texto_duracion,i+1,2, QtCore.Qt.AlignTop | QtCore.Qt.AlignCenter)
+            self.caja_canciones.layout().addWidget(texto_duracion,i,2, QtCore.Qt.AlignTop | QtCore.Qt.AlignCenter)
             
-            self.botones.append((QPushButton("Ver"),QPushButton("Borrar")))
-            self.botones[i][0].setFixedWidth(50)
-            self.botones[i][1].setFixedWidth(50)
-            self.botones[i][0].clicked.connect(lambda estado, x=canciones[i]["id"]: self.ver_cancion(x))
-            self.botones[i][1].clicked.connect(lambda estado, x=canciones[i]["id"]: self.borrar_cancion(x))
+            boton_ver = QPushButton("Ver")
+            boton_ver.setFixedSize(50, 25)
+            boton_ver.clicked.connect(lambda estado, x=cancion["id"]: self.ver_cancion(x))
+
+            boton_borrar = QPushButton("Borrar")
+            boton_borrar.setFixedSize(50, 25)
+            boton_borrar.clicked.connect(lambda estado, x=cancion["id"]: self.borrar_cancion(x))
 
             widget_botones = QWidget()
             widget_botones.setLayout(QGridLayout())
             widget_botones.setFixedWidth(110)
         
-            widget_botones.layout().addWidget(self.botones[i][0],0,0)
-            widget_botones.layout().addWidget(self.botones[i][1],0,1)
+            widget_botones.layout().addWidget(boton_ver,0,0)
+            widget_botones.layout().addWidget(boton_borrar,0,1)
             widget_botones.layout().setContentsMargins(0,0,0,0)
 
-            self.caja_canciones.layout().addWidget(widget_botones, i+1,3)
-            self.caja_canciones.layout().setAlignment(widget_botones , QtCore.Qt.AlignTop )
+            self.caja_canciones.layout().addWidget(widget_botones, i,3, QtCore.Qt.AlignTop | QtCore.Qt.AlignCenter)
+            i+=1
+
+        self.caja_canciones.layout().setRowStretch(i, 1)
 
     
     def ver_cancion(self, id_cancion):

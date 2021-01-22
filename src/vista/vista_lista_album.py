@@ -35,7 +35,7 @@ class Ventana_Lista_Album(QWidget):
             etiqueta_titulo = QLabel(self.titulos[i])
             etiqueta_titulo.setFont(QFont("Times",weight=QFont.Bold))
             etiqueta_titulo.setAlignment(QtCore.Qt.AlignCenter)
-            self.caja_albums.layout().addWidget(etiqueta_titulo,0,i)
+            self.caja_albums.layout().addWidget(etiqueta_titulo,0,i, QtCore.Qt.AlignTop | QtCore.Qt.AlignCenter)
 
 
         self.caja_botones = QGroupBox()
@@ -62,23 +62,39 @@ class Ventana_Lista_Album(QWidget):
     
     def mostrar_albums(self, albumes):
         self.limpiar_albums()
-        self.botones = []
-        for i in range(len(albumes)):
-            texto_titulo = QLineEdit(albumes[i]["titulo"])
+
+        i = 1
+        for album in albumes:
+            texto_titulo = QLineEdit(album["titulo"])
             texto_titulo.setReadOnly(True)
-            self.caja_albums.layout().addWidget(texto_titulo,i+1,0, QtCore.Qt.AlignTop | QtCore.Qt.AlignCenter)
+            self.caja_albums.layout().addWidget(texto_titulo,i,0, QtCore.Qt.AlignTop | QtCore.Qt.AlignCenter)
 
-            texto_interpretes = QLineEdit(albumes[i].get("interpretes",""))
+            texto_interpretes = QLineEdit(album.get("interpretes",""))
             texto_interpretes.setReadOnly(True)
-            self.caja_albums.layout().addWidget(texto_interpretes,i+1,1, QtCore.Qt.AlignTop | QtCore.Qt.AlignCenter)
+            self.caja_albums.layout().addWidget(texto_interpretes,i,1, QtCore.Qt.AlignTop | QtCore.Qt.AlignCenter)
 
-            texto_medio = QLineEdit(albumes[i]["medio"].name)
+            texto_medio = QLineEdit(album["medio"].name)
             texto_medio.setReadOnly(True)
-            self.caja_albums.layout().addWidget(texto_medio,i+1,2, QtCore.Qt.AlignTop | QtCore.Qt.AlignCenter)
+            self.caja_albums.layout().addWidget(texto_medio,i,2, QtCore.Qt.AlignTop | QtCore.Qt.AlignCenter)
             
-            self.botones.append(QPushButton("Ver"))
-            self.botones[i].clicked.connect(lambda estado, x=albumes[i]["id"]: self.ver_album(x))
-            self.caja_albums.layout().addWidget(self.botones[i],i+1,3, QtCore.Qt.AlignTop | QtCore.Qt.AlignCenter)
+            widget_botones = QWidget()
+            widget_botones.setLayout(QGridLayout())
+
+            boton_ver = QPushButton("Ver")
+            boton_ver.setFixedSize(50,25)
+            boton_ver.clicked.connect(lambda estado, x=album["id"]: self.ver_album(x))
+            widget_botones.layout().addWidget(boton_ver,0,0)
+
+            boton_borrar = QPushButton("Borrar")
+            boton_borrar.setFixedSize(50,25)
+            #self.botones[i].clicked.connect(lambda estado, x=albumes[i]["id"]: self.ver_album(x))
+            widget_botones.layout().addWidget(boton_borrar,0,1 )
+
+            widget_botones.layout().setContentsMargins(0,0,0,0)
+
+            self.caja_albums.layout().addWidget(widget_botones, i, 3, QtCore.Qt.AlignTop | QtCore.Qt.AlignCenter)
+            i+=1
+        self.caja_albums.layout().setRowStretch(i, 1)
 
     def limpiar_albums(self):
         while self.caja_albums.layout().count() > len(self.titulos) :
