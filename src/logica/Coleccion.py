@@ -88,10 +88,10 @@ class Coleccion():
         session.commit()
         return True
 
-    def agregarInterprete(self, nombre, texto_curiosidades):
+    def agregarInterprete(self, nombre, texto_curiosidades, cancion_id):
         interprete = session.query(Interprete).filter(Interprete.nombre == nombre).all()
         if len(interprete) == 0:
-            nuevoInterprete = Interprete(nombre=nombre, texto_curiosidades=texto_curiosidades)
+            nuevoInterprete = Interprete(nombre=nombre, texto_curiosidades=texto_curiosidades, cancion=cancion_id)
             session.add(nuevoInterprete)
             session.commit()
             return True
