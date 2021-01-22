@@ -12,12 +12,12 @@ class Cancion(Base):
     minutos = Column(Integer)
     segundos = Column(Integer)
     compositor = Column(String)
-    albumes = relationship('Album', secondary='link')
-    interpretes = relationship('Interprete')
+    albumes = relationship('Album', secondary='album_cancion')
+    interpretes = relationship('Interprete', cascade='all, delete, delete-orphan')
 
 
-class Link(Base):
-    __tablename__ = 'link'
+class AlbumCancion(Base):
+    __tablename__ = 'album_cancion'
 
     cancion_id = Column(
         Integer,
