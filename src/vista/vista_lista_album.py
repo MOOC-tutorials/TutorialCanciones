@@ -23,27 +23,25 @@ class Ventana_Lista_Album(QWidget):
         self.distr_lista_canciones = QVBoxLayout()
         self.setLayout(self.distr_lista_canciones)
         
-        self.caja_titulos = QGroupBox()
-        layout_titulos = QGridLayout()
-        self.caja_titulos.setLayout(layout_titulos)
-
-        titulos = ["Titulo del album", "Intérpretes", "Medio", "Acciones"]
-        
-        for i in range(len(titulos)):
-            etiqueta_titulo = QLabel(titulos[i])
-            etiqueta_titulo.setFont(QFont("Times",weight=QFont.Bold))
-            etiqueta_titulo.setAlignment(QtCore.Qt.AlignCenter)
-            layout_titulos.addWidget(etiqueta_titulo,0,i)
-
         self.lista_albums = QScrollArea()
         self.lista_albums.setWidgetResizable(True)
         self.caja_albums = QWidget()
         self.caja_albums.setLayout(QGridLayout())
         self.lista_albums.setWidget(self.caja_albums)
 
+        self.titulos = ["Titulo del album", "Intérpretes", "Medio", "Acciones"]
+        
+        for i in range(len(self.titulos)):
+            etiqueta_titulo = QLabel(self.titulos[i])
+            etiqueta_titulo.setFont(QFont("Times",weight=QFont.Bold))
+            etiqueta_titulo.setAlignment(QtCore.Qt.AlignCenter)
+            self.caja_albums.layout().addWidget(etiqueta_titulo,0,i)
+
+
         self.caja_botones = QGroupBox()
         layout_botones = QHBoxLayout()
         self.caja_botones.setLayout(layout_botones)
+
 
         self.boton_buscar = QPushButton("Buscar")
         self.boton_buscar.clicked.connect(self.buscar)
@@ -51,19 +49,14 @@ class Ventana_Lista_Album(QWidget):
         self.boton_nuevo = QPushButton("Nuevo")
         self.boton_nuevo.clicked.connect(self.nuevo_album)
 
-        self.boton_interpretes = QPushButton("Ver Intérpretes")
-        self.boton_interpretes.clicked.connect(self.ver_interpretes)
-
         self.boton_canciones = QPushButton("Ver Canciones")
         self.boton_canciones.clicked.connect(self.ver_canciones)
 
 
         layout_botones.addWidget(self.boton_buscar)
         layout_botones.addWidget(self.boton_nuevo)
-        layout_botones.addWidget(self.boton_interpretes)
         layout_botones.addWidget(self.boton_canciones)
 
-        self.distr_lista_canciones.addWidget(self.caja_titulos)
         self.distr_lista_canciones.addWidget(self.lista_albums)
         self.distr_lista_canciones.addWidget(self.caja_botones)
     
@@ -88,8 +81,8 @@ class Ventana_Lista_Album(QWidget):
             self.caja_albums.layout().addWidget(self.botones[i],i+1,3, QtCore.Qt.AlignTop | QtCore.Qt.AlignCenter)
 
     def limpiar_albums(self):
-        while self.caja_albums.layout().count():
-            child = self.caja_albums.layout().takeAt(0)
+        while self.caja_albums.layout().count() > len(self.titulos) :
+            child = self.caja_albums.layout().takeAt(len(self.titulos))
             if child.widget():
                 child.widget().deleteLater()
 
@@ -143,10 +136,6 @@ class Ventana_Lista_Album(QWidget):
     def crear_album(self, nuevo_album):
         self.interfaz.crear_album(nuevo_album)
         self.dialogo_nuevo_album.close()
-
-    def ver_interpretes(self):
-        self.hide()
-        self.interfaz.mostrar_ventana_lista_interpretes()   
 
     def ver_canciones(self):
         self.hide()

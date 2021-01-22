@@ -31,15 +31,7 @@ class Ventana_Album(QWidget):
         self.caja_datos = QGroupBox()
         layout_datos = QGridLayout()
         self.caja_datos.setLayout(layout_datos)
-
-        datos = ["Album", "Año de producción", "Descripción", "Medio"]
-        for i in range(len(datos)):
-            etiqueta = QLabel(datos[i])
-            etiqueta.setFont(QFont("Times",weight=QFont.Bold))
-            etiqueta.setAlignment(QtCore.Qt.AlignCenter)
-            layout_datos.addWidget(etiqueta,i,0)
-
-       
+    
         self.texto_album = QLineEdit()
         layout_datos.addWidget(self.texto_album, 0, 1)
 
@@ -78,13 +70,6 @@ class Ventana_Album(QWidget):
         layout_titulos = QGridLayout()
         self.caja_titulos.setLayout(layout_titulos)
 
-        titulos = ["Título de la canción", "Intérpretes", "Duración", "Acciones"]
-        for i in range(len(titulos)):
-            etiqueta = QLabel(titulos[i])
-            etiqueta.setFont(QFont("Times",weight=QFont.Bold))
-            etiqueta.setAlignment(QtCore.Qt.AlignCenter)
-            layout_titulos.addWidget(etiqueta,0,i)
-
         self.boton_albums = QPushButton("Ver lista de albums")
         self.boton_albums.clicked.connect(self.ver_albums)
 
@@ -93,6 +78,13 @@ class Ventana_Album(QWidget):
         self.caja_canciones = QWidget()
         self.caja_canciones.setLayout(QGridLayout())
         self.lista_canciones.setWidget(self.caja_canciones)
+
+        self.titulos_cancion = ["Título de la canción", "Intérpretes", "Duración", "Acciones"]
+        for i in range(len(self.titulos_cancion)):
+            etiqueta = QLabel(self.titulos_cancion[i])
+            etiqueta.setFont(QFont("Times",weight=QFont.Bold))
+            etiqueta.setAlignment(QtCore.Qt.AlignCenter)
+            self.caja_canciones.layout().addWidget(etiqueta,0,i, QtCore.Qt.AlignTop | QtCore.Qt.AlignCenter)
 
         self.distr_album.addWidget(self.caja_album)
         self.distr_album.addWidget(self.caja_titulos)
@@ -107,8 +99,8 @@ class Ventana_Album(QWidget):
         self.lista_medios.setCurrentIndex(self.interfaz.dar_medios().index(album["medio"].name))
 
     def limpiar_canciones(self):
-        while self.caja_canciones.layout().count():
-            child = self.caja_canciones.layout().takeAt(0)
+        while self.caja_canciones.layout().count()>len(self.titulos_cancion):
+            child = self.caja_canciones.layout().takeAt(len(self.titulos_cancion))
             if child.widget():
                 child.widget().deleteLater()
 

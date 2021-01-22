@@ -43,9 +43,6 @@ class Ventana_Lista_Canciones(QWidget):
         self.boton_nuevo = QPushButton("Nuevo")
         self.boton_nuevo.clicked.connect(self.mostrar_dialogo_nueva_cancion)
 
-        self.boton_interpretes = QPushButton("Ver Intérpretes")
-        self.boton_interpretes.clicked.connect(self.ver_interpretes)
-
         self.boton_albumes = QPushButton("Ver Álbumes")
         self.boton_albumes.clicked.connect(self.ver_albumes)
 
@@ -57,7 +54,6 @@ class Ventana_Lista_Canciones(QWidget):
 
         self.widget_botones.layout().addWidget(self.boton_buscar)
         self.widget_botones.layout().addWidget(self.boton_nuevo)
-        self.widget_botones.layout().addWidget(self.boton_interpretes)
         self.widget_botones.layout().addWidget(self.boton_albumes)
 
     def crear_campo_texto(self, texto, edit=True):
