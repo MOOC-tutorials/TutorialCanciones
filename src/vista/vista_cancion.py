@@ -29,6 +29,7 @@ class Ventana_Cancion(QWidget):
         self.cancion_actual = None
         self.interpretes = []
         self.id_album = -1
+        self.interpretes_a_eliminar = []
 
         self.setWindowTitle(self.title)
         self.setFixedSize(self.width, self.height)
@@ -158,10 +159,9 @@ class Ventana_Cancion(QWidget):
             boton_ver.clicked.connect(lambda estado, n_interprete=i: self.mostrar_dialogo_crear_interprete(n_interprete))
             widget_botones.layout().addWidget(boton_ver,fila,0, QtCore.Qt.AlignTop | QtCore.Qt.AlignCenter)
             boton_borrar = QPushButton("Borrar")
-            boton_borrar.setEnabled(False)
             boton_borrar.setFixedWidth(50)
             boton_borrar.setFixedSize(50,25)
-            boton_borrar.clicked.connect(lambda estado, x=i: self.eliminar_interprete(x))
+            boton_borrar.clicked.connect(lambda estado, n_interprete=i: self.eliminar_interprete(n_interprete))
             widget_botones.layout().addWidget(boton_borrar,fila,1, QtCore.Qt.AlignTop | QtCore.Qt.AlignCenter)
 
             widget_botones.layout().setContentsMargins(0,0,0,0)
@@ -169,7 +169,7 @@ class Ventana_Cancion(QWidget):
             self.caja_interpretes.layout().addWidget(widget_botones, fila, 1, QtCore.Qt.AlignTop | QtCore.Qt.AlignCenter)
             fila+=1
         #Esta función nos permite mostrar los resultados compactados hacia arriba
-        self.caja_interpretes.layout().setRowStretch(fila+1, 1)
+        self.caja_interpretes.layout().setRowStretch(fila+2, 1)
 
     def guardar_cancion(self):
         '''
@@ -198,6 +198,10 @@ class Ventana_Cancion(QWidget):
                 self.interfaz.crear_cancion({"titulo":self.texto_cancion.text(),"minutos":self.texto_minutos.text(), "segundos":self.texto_segundos.text(), "compositor":self.texto_compositor.text()}, self.interpretes, id_album=self.id_album)
             else:
                 #Si ya hay una canción actual, se debe actualizar
+                for id in self.interpretes_a_eliminar:
+                    if id != "n":
+                        self.interfaz.eliminar_interprete(id)
+                self.interpretes_a_eliminar = []
                 self.cancion_actual["titulo"]=self.texto_cancion.text()
                 self.cancion_actual["minutos"]=self.texto_minutos.text()
                 self.cancion_actual["segundos"]=self.texto_segundos.text()
@@ -210,11 +214,12 @@ class Ventana_Cancion(QWidget):
                 self.interfaz.mostrar_ventana_album(self.id_album)
                 self.id_album = -1
 
-    def eliminar_interprete(self, id_interprete):
+    def eliminar_interprete(self, n_interprete):
         '''
         Método para eliminar intérpretes de la ventana
         '''
-        self.interpretes.pop(id_interprete)
+        self.interpretes_a_eliminar.append(self.interpretes[n_interprete]["id"])
+        self.interpretes.pop(n_interprete)
         self.mostrar_interpretes(self.interpretes)
         
     def mostrar_dialogo_crear_interprete(self, n_interprete=-1):

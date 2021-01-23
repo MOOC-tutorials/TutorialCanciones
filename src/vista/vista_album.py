@@ -202,7 +202,7 @@ class Ventana_Album(QWidget):
         Método para crear una canción
         '''
         self.hide()
-        self.interfaz.mostrar_ventana_cancion(nueva=True, album=self.album_actual["id"])
+        self.interfaz.mostrar_ventana_cancion(nueva=True, id_album=self.album_actual["id"])
 
     def mostrar_dialogo_agregar_cancion(self):
         '''

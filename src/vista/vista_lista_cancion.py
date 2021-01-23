@@ -103,19 +103,19 @@ class Ventana_Lista_Canciones(QWidget):
         '''
         self.limpiar_canciones()
         self.botones = []
-        i = 1
+        fila = 1
         for cancion in canciones:
             texto_titulo = QLineEdit(cancion["titulo"])
             texto_titulo.setReadOnly(True)
-            self.caja_canciones.layout().addWidget(texto_titulo,i,0, QtCore.Qt.AlignTop | QtCore.Qt.AlignCenter)
+            self.caja_canciones.layout().addWidget(texto_titulo,fila,0, QtCore.Qt.AlignTop | QtCore.Qt.AlignCenter)
 
             texto_interpretes = QLineEdit(cancion.get("compositor",cancion["compositor"]))
             texto_interpretes.setReadOnly(True)
-            self.caja_canciones.layout().addWidget(texto_interpretes,i,1, QtCore.Qt.AlignTop | QtCore.Qt.AlignCenter)
+            self.caja_canciones.layout().addWidget(texto_interpretes,fila,1, QtCore.Qt.AlignTop | QtCore.Qt.AlignCenter)
             
             texto_duracion = QLineEdit("{}:{}".format(cancion["minutos"],cancion["segundos"]))
             texto_duracion.setReadOnly(True)
-            self.caja_canciones.layout().addWidget(texto_duracion,i,2, QtCore.Qt.AlignTop | QtCore.Qt.AlignCenter)
+            self.caja_canciones.layout().addWidget(texto_duracion,fila,2, QtCore.Qt.AlignTop | QtCore.Qt.AlignCenter)
             
             boton_ver = QPushButton("Ver")
             boton_ver.setFixedSize(50, 25)
@@ -133,10 +133,10 @@ class Ventana_Lista_Canciones(QWidget):
             widget_botones.layout().addWidget(boton_borrar,0,1)
             widget_botones.layout().setContentsMargins(0,0,0,0)
 
-            self.caja_canciones.layout().addWidget(widget_botones, i,3, QtCore.Qt.AlignTop | QtCore.Qt.AlignCenter)
-            i+=1
+            self.caja_canciones.layout().addWidget(widget_botones, fila,3, QtCore.Qt.AlignTop | QtCore.Qt.AlignCenter)
+            fila+=1
         #Esta instrucción permite compactar los resultados
-        self.caja_canciones.layout().setRowStretch(i, 1)
+        self.caja_canciones.layout().setRowStretch(fila+1, 1)
 
     
     def ver_cancion(self, id_cancion):

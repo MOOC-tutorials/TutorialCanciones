@@ -80,18 +80,18 @@ class App(QApplication):
         '''
         self.logica.editarAlbum(n_album, nuevo_album["titulo"], nuevo_album["ano"], nuevo_album["descripcion"], nuevo_album["medio"])
 
+    def guardar_cancion(self, nueva_cancion, interpretes):
+        '''
+        Método para editar una canción
+        '''
+        res = self.logica.editarCancion(nueva_cancion["id"], nueva_cancion["titulo"], nueva_cancion["minutos"], nueva_cancion["segundos"], nueva_cancion["compositor"], interpretes)
+
     def eliminar_album(self, id_album):
         '''
         Método para eliminar un album
         '''
         self.logica.eliminarAlbum(id_album)
         self.ventana_lista_album.mostrar_albums(self.logica.darAlbumes())
-
-    def guardar_cancion(self, nueva_cancion, interpretes):
-        '''
-        Método para editar una canción
-        '''
-        res = self.logica.editarCancion(nueva_cancion["id"], nueva_cancion["titulo"], nueva_cancion["minutos"], nueva_cancion["segundos"], nueva_cancion["compositor"], interpretes)
 
     def eliminar_cancion(self, id_cancion):
         '''
@@ -100,6 +100,12 @@ class App(QApplication):
         self.ventana_cancion.hide()
         self.logica.eliminarCancion(id_cancion)
         self.ventana_lista_canciones.mostrar_canciones(self.logica.darCanciones())
+
+    def eliminar_interprete(self, id_interprete):
+        '''
+        Método para eliminar un intérprete
+        '''
+        self.logica.eliminarInterprete(id_interprete)
 
     def crear_album(self, nuevo_album):
         '''
