@@ -153,6 +153,7 @@ class Ventana_Lista_Album(QWidget):
         Método para desplegar el diálogo para añadir un nuevo album
         '''
         self.dialogo_nuevo_album = QDialog(self)
+        self.dialogo_nuevo_album.setFixedWidth(300)
         
         layout = QGridLayout()
         self.dialogo_nuevo_album.setLayout(layout)

@@ -1,5 +1,5 @@
 from PyQt5.QtWidgets import QDialog, QScrollArea, QWidget, QPushButton, QHBoxLayout, QGroupBox, QGridLayout, QLabel, QLineEdit, QVBoxLayout
-from PyQt5.QtGui import QFont
+from PyQt5.QtGui import QFont, QPixmap
 from PyQt5 import QtCore, Qt
 
 class Ventana_Inicial(QWidget):
@@ -13,8 +13,8 @@ class Ventana_Inicial(QWidget):
         self.title = 'Mi música - Búsqueda'
         self.left = 80
         self.top = 80
-        self.width = 500
-        self.height = 400
+        self.width = 550
+        self.height = 500
         #Inicializamos la ventana principal
         self.inicializar_ventana()
 
@@ -28,6 +28,14 @@ class Ventana_Inicial(QWidget):
         
         self.distr_caja_busquedas = QGridLayout()
         self.setLayout(self.distr_caja_busquedas)
+
+        #Creación del logo
+
+        logo=QLabel(self)
+        pixmap = QPixmap("src/recursos/Banner.png") 
+        pixmap = pixmap.scaledToWidth(self.width)       
+        logo.setPixmap(pixmap)
+        logo.setAlignment(QtCore.Qt.AlignCenter)
 
         #Etiquetas principales de la caja de búsquedas
 
@@ -64,23 +72,24 @@ class Ventana_Inicial(QWidget):
         self.etiqueta_resultados.setFont(QFont("Times", weight=QFont.Bold))
 
         #Se añaden los elementos a los distribuidores
+        
+        self.distr_caja_busquedas.addWidget(logo, 0, 0, 1, 4)
 
-        self.distr_caja_busquedas.addWidget(self.etiqueta_album, 0,0)
-        self.distr_caja_busquedas.addWidget(self.txt_album, 0, 1)
-        self.distr_caja_busquedas.addWidget(self.boton_buscar_album, 0, 2)
-        self.distr_caja_busquedas.addWidget(self.boton_ver_albumes, 0, 3)
+        self.distr_caja_busquedas.addWidget(self.etiqueta_album, 1,0)
+        self.distr_caja_busquedas.addWidget(self.txt_album, 1, 1)
+        self.distr_caja_busquedas.addWidget(self.boton_buscar_album, 1, 2)
+        self.distr_caja_busquedas.addWidget(self.boton_ver_albumes, 1, 3)
 
-        self.distr_caja_busquedas.addWidget(self.etiqueta_cancion, 1,0)
-        self.distr_caja_busquedas.addWidget(self.txt_cancion, 1, 1)
-        self.distr_caja_busquedas.addWidget(self.boton_buscar_cancion, 1, 2)
-        self.distr_caja_busquedas.addWidget(self.boton_ver_canciones, 1, 3)
+        self.distr_caja_busquedas.addWidget(self.etiqueta_cancion, 2,0)
+        self.distr_caja_busquedas.addWidget(self.txt_cancion, 2, 1)
+        self.distr_caja_busquedas.addWidget(self.boton_buscar_cancion, 2, 2)
+        self.distr_caja_busquedas.addWidget(self.boton_ver_canciones, 2, 3)
 
-        self.distr_caja_busquedas.addWidget(self.etiqueta_interprete, 2,0)
-        self.distr_caja_busquedas.addWidget(self.txt_interprete, 2, 1)
-        self.distr_caja_busquedas.addWidget(self.boton_buscar_interprete, 2, 2)
-        #self.distr_caja_busquedas.addWidget(self.boton_ver_interpretes, 2, 3)
+        self.distr_caja_busquedas.addWidget(self.etiqueta_interprete, 3,0)
+        self.distr_caja_busquedas.addWidget(self.txt_interprete, 3, 1)
+        self.distr_caja_busquedas.addWidget(self.boton_buscar_interprete, 3, 2)
 
-        self.distr_caja_busquedas.addWidget(self.etiqueta_resultados, 3, 0, 1, 4)
+        self.distr_caja_busquedas.addWidget(self.etiqueta_resultados, 4, 0, 1, 4)
         self.distr_caja_busquedas.setAlignment(self.etiqueta_resultados, QtCore.Qt.AlignCenter)
 
         #Se crea un área con barra de desplazamiento para mostrar los resultados
@@ -179,7 +188,7 @@ class Ventana_Inicial(QWidget):
         for interprete in lista_interpretes:
             etiqueta_nombre = QLabel(interprete["nombre"])
             etiqueta_nombre.setFixedSize(200,30)
-            self.widget_tabla_resultados.layout().addWidget(etiqueta_nombre, fila, 0)  
+            self.widget_tabla_resultados.layout().addWidget(etiqueta_nombre, fila, 0, QtCore.Qt.AlignLeft)  
 
             boton_ver = QPushButton("Ver canción")
             boton_ver.clicked.connect(lambda estado, id=interprete["cancion"]: self.ver_cancion(id))

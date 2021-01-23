@@ -1,6 +1,6 @@
 
 from PyQt5.QtWidgets import QMessageBox, QScrollArea, QPlainTextEdit, QComboBox, QDialog, QWidget, QPushButton, QHBoxLayout, QGroupBox, QGridLayout, QLabel, QLineEdit, QVBoxLayout
-from PyQt5.QtGui import QFont
+from PyQt5.QtGui import QFont, QPixmap
 from PyQt5 import QtCore
 
 class Ventana_Cancion(QWidget):
@@ -17,8 +17,8 @@ class Ventana_Cancion(QWidget):
         self.title = 'Mi música - canción'
         self.left = 80
         self.top = 80
-        self.width = 500
-        self.height = 400
+        self.width = 550
+        self.height = 570
         #Inicializamos la ventana principal
         self.inicializar_ventana()
 
@@ -40,6 +40,14 @@ class Ventana_Cancion(QWidget):
         self.caja_datos = QGroupBox()
         layout_datos = QGridLayout()
         self.caja_datos.setLayout(layout_datos)
+
+        #Creación del logo
+
+        logo=QLabel(self)
+        pixmap = QPixmap("src/recursos/Banner.png") 
+        pixmap = pixmap.scaledToWidth(self.width)       
+        logo.setPixmap(pixmap)
+        logo.setAlignment(QtCore.Qt.AlignCenter)
 
         #Creación de las etiquetas básicas
 
@@ -111,6 +119,7 @@ class Ventana_Cancion(QWidget):
 
         #Se añaden los componentes al distribuidor principal
 
+        self.distr_cancion.addWidget(logo)
         self.distr_cancion.addWidget(self.caja_datos)
         self.distr_cancion.addWidget(etiqueta_interpretes,  QtCore.Qt.AlignTop | QtCore.Qt.AlignCenter)
         self.distr_cancion.addWidget(self.lista_interpretes)

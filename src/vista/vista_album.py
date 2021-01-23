@@ -1,5 +1,5 @@
 from PyQt5.QtWidgets import QScrollArea, QDialog, QWidget, QPushButton, QHBoxLayout, QGroupBox, QGridLayout, QLabel, QLineEdit, QVBoxLayout, QComboBox
-from PyQt5.QtGui import QFont
+from PyQt5.QtGui import QFont, QPixmap
 from PyQt5 import QtCore
 
 class Ventana_Album(QWidget):
@@ -17,8 +17,8 @@ class Ventana_Album(QWidget):
         self.title = 'Mi música - album'
         self.left = 80
         self.top = 80
-        self.width = 500
-        self.height = 450
+        self.width = 550
+        self.height = 650
         #Inicializamos la ventana principal
         self.inicializar_ventana()
 
@@ -41,6 +41,14 @@ class Ventana_Album(QWidget):
         self.caja_datos = QGroupBox()
         layout_datos = QGridLayout()
         self.caja_datos.setLayout(layout_datos)
+
+        #Creación del logo
+
+        logo=QLabel(self)
+        pixmap = QPixmap("src/recursos/Banner.png") 
+        pixmap = pixmap.scaledToWidth(self.width)       
+        logo.setPixmap(pixmap)
+        logo.setAlignment(QtCore.Qt.AlignCenter)
     
         #Creación de etiquetas
 
@@ -119,6 +127,7 @@ class Ventana_Album(QWidget):
 
         #Se agregan los elementos al distribuidor
 
+        self.distr_album.addWidget(logo)
         self.distr_album.addWidget(self.caja_album)
         self.distr_album.addWidget(self.etiqueta_canciones)
         self.distr_album.addWidget(self.lista_canciones)
