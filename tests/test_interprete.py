@@ -28,14 +28,13 @@ class InterpreteTestCase(unittest.TestCase):
         self.assertIsNone(self.consulta)
 
     def testBuscarCancionesPorInterprete(self):
-        self.coleccion.agregarInterprete("Pipe Pelaez", "Primera canción vallenata...", -1)
-        self.coleccion.agregarCancion("Tan natural", 2, 53, "Manuel Julian", -1,
-                                      [{'nombre': 'Pipe Pelaez', 'texto_curiosidades': 'Primera canción vallenata...'}])
-        self.coleccion.agregarInterprete("Pipe Bueno", "Número 1 en ventas...", -1)
-        self.coleccion.agregarCancion("Otra", 4, 13, "Desconocido", -1,
-                                      [{'nombre': 'Pipe Bueno', 'texto_curiosidades': 'Número 1 en ventas...'}])
-        self.consulta = self.coleccion.buscarCancionesPorInterprete("pipe")
-        self.assertEqual(len(self.consulta), 2)
+        self.consulta1 = self.session.query(Interprete).filter(Interprete.nombre == "Pipe Pelaez").first()
+        if self.consulta1 is None:
+            self.coleccion.agregarInterprete("Pipe Pelaez", "Primera canción vallenata...", -1)
+            self.coleccion.agregarCancion("Tan natural", 2, 53, "Manuel Julian", -1,
+                                          [{'id':'n', 'nombre': 'Pipe Pelaez', 'texto_curiosidades': 'Primera canción vallenata...'}])
+        self.consulta2 = self.coleccion.buscarCancionesPorInterprete("pipe")
+        self.assertEqual(len(self.consulta2), 1)
 
     def testBuscarInterpretesPorNombre(self):
         self.coleccion.agregarInterprete("Freddie Mercury", "Primera canción como solista", -1)

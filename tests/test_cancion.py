@@ -4,6 +4,7 @@ from src.logica.Coleccion import Coleccion
 from src.modelo.album import Album
 from src.modelo.cancion import Cancion
 from src.modelo.declarative_base import Session
+from src.modelo.interprete import Interprete
 
 
 class CancionTestCase(unittest.TestCase):
@@ -34,21 +35,29 @@ class CancionTestCase(unittest.TestCase):
 
     def testEditarCancionSinCambiarInterpretes(self):
         self.coleccion.editarCancion(1, "Bye mamá", 2, 54, "J.R.Florez",
-                                     [{'nombre': 'Alejandra Guzman',
+                                     [{'id': '2', 'nombre': 'Alejandra Guzman',
                                        'texto_curiosidades': 'Canción dedicada a su ...'}])
-        self.consulta = self.session.query(Cancion).filter(Cancion.id == 1).first().compositor
-        self.assertEqual(self.consulta, "J.R.Florez")
+        self.consulta = self.session.query(Cancion).filter(Cancion.id == 1).first()
+        self.assertEqual(self.consulta.compositor, "J.R.Florez")
 
     def testEditarCancionInterpretes(self):
         self.consulta1 = self.session.query(Cancion).filter(Cancion.id == 1).first().compositor
-        self.coleccion.agregarInterprete("Franco de Vita", "Duo con más likes en redes", 1)
-        self.coleccion.editarCancion(1, "Bye mamá", 4, 23, "J.R.Florez y Difelisatti",
-                                     [{'nombre': 'Alejandra Guzman',
+        self.consulta2 = self.session.query(Interprete).filter(Interprete.nombre == "Franco de Vita").first()
+        if self.consulta2 is None:
+            self.coleccion.agregarInterprete("Franco de Vita", "Duo con más likes en redes", 1)
+            self.coleccion.editarCancion(1, "Bye mamá", 4, 23, "J.R.Florez y Difelisatti",
+                                     [{'id': '2', 'nombre': 'Alejandra Guzman',
                                        'texto_curiosidades': 'Canción dedicada a su ...'},
-                                      {'nombre': 'Franco de Vita',
+                                      {'id':'n', 'nombre': 'Franco de Vita',
                                        'texto_curiosidades': 'Duo con más likes en redes'}])
-        self.consulta = self.session.query(Cancion).filter(Cancion.id == 1).first().compositor
-        self.assertEqual(self.consulta, "J.R.Florez y Difelisatti")
+        else:
+            self.coleccion.editarCancion(1, "Bye bye", 4, 23, "J.R.Florez y Difelisatti",
+                                         [{'id': '2', 'nombre': 'Alejandra Guzman',
+                                           'texto_curiosidades': 'Canción dedicada a su ...'},
+                                          {'id': '9', 'nombre': 'Franco de Vita',
+                                           'texto_curiosidades': 'Duo con más likes en redes'}])
+        self.consulta3 = self.session.query(Cancion).filter(Cancion.id == 1).first()
+        self.assertEqual(self.consulta3.compositor, "J.R.Florez y Difelisatti")
 
     def testEliminarCancion(self):
         self.coleccion.eliminarCancion(2)
