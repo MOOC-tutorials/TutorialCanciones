@@ -184,7 +184,7 @@ class Ventana_Album(QWidget):
         Método para mostrar la canción
         '''
         self.hide()
-        self.interfaz.mostrar_ventana_cancion(album=self.album_actual["id"],  id_cancion=cancion["id"])
+        self.interfaz.mostrar_ventana_cancion(id_album=self.album_actual["id"],  id_cancion=cancion["id"])
 
     def guardar_album(self):
         '''
