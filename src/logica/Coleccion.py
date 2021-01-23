@@ -176,14 +176,12 @@ class Coleccion():
             cancion.segundos = segundos
             cancion.compositor = compositor
             for item in interpretes:
-                int_id = item.get("id","n") 
-                if int_id == "n":
+                if item["id"] == "n":
                     interprete = Interprete(nombre=item["nombre"], texto_curiosidades=item["texto_curiosidades"], cancion=cancion.id)
                     session.add(interprete)
                     cancion.interpretes.append(interprete)         
                 else:
-                    self.editarInterprete(item["id"], item["nombre"], item["texto_curiosidades"])             
-            
+                    self.editarInterprete(item["id"], item["nombre"], item["texto_curiosidades"])
             session.commit()
             return True
         except Exception as e:
