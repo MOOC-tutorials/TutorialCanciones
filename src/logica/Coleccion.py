@@ -86,28 +86,28 @@ class Coleccion():
                 album = session.query(Album).filter(Album.id == album_id).first()
                 nuevaCancion = Cancion(titulo=titulo, minutos=minutos, segundos=segundos, compositor=compositor,
                                        albumes=[album])
+                session.add(nuevaCancion)
                 for item in interpretes:
-                    interprete = session.query(Interprete).filter(Interprete.nombre == item["nombre"]).first()
+                    interprete = Interprete(nombre=item["nombre"], texto_curiosidades=item["texto_curiosidades"], cancion=nuevaCancion.id)
+                    session.add(interprete)
                     interpretesCancion.append(interprete)
-                nuevaCancion.interpretes = interpretesCancion
+                nuevaCancion.interpretes=interpretesCancion
                 session.add(nuevaCancion)
                 session.commit()
                 return True
             else:
                 return False
         else:
-            busqueda = session.query(Cancion).filter(Cancion.titulo == titulo).all()
-            if len(busqueda) == 0:
-                nuevaCancion = Cancion(titulo=titulo, minutos=minutos, segundos=segundos, compositor=compositor)
-                for item in interpretes:
-                    interprete = session.query(Interprete).filter(Interprete.nombre == item["nombre"]).first()
-                    interpretesCancion.append(interprete)
-                nuevaCancion.interpretes = interpretesCancion
-                session.add(nuevaCancion)
-                session.commit()
-                return True
-            else:
-                return False
+            nuevaCancion = Cancion(titulo=titulo, minutos=minutos, segundos=segundos, compositor=compositor)
+            session.add(nuevaCancion)
+            for item in interpretes:
+                interprete = Interprete(nombre=item["nombre"], texto_curiosidades=item["texto_curiosidades"], cancion=nuevaCancion.id)
+                session.add(interprete)
+                interpretesCancion.append(interprete)
+            nuevaCancion.interpretes=interpretesCancion
+            session.add(nuevaCancion)
+            session.commit()
+            return True
 
     def agregarInterprete(self, nombre, texto_curiosidades, cancion_id):
         busqueda = session.query(Interprete).filter(Interprete.nombre == nombre).all()
