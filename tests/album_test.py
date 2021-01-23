@@ -46,6 +46,3 @@ class AlbumTestCase(unittest.TestCase):
         self.coleccion.agregarAlbum("New life", 2018, "Album escrito para...", "CD")
         self.consulta2 = self.coleccion.darAlbumes()
         self.assertGreater(len(self.consulta2), len(self.consulta1))
-
-    def testDarCancionesDeAlbum(self):
-        pass

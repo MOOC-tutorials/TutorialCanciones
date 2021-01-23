@@ -63,7 +63,7 @@ class CancionTestCase(unittest.TestCase):
                                       [{'nombre': 'Andrea Echeverri',
                                         'texto_curiosidades': 'En ese año nacio su hijo...'}])
         self.consulta = self.coleccion.buscarCancionesPorTitulo("Baby")
-        self.assertEqual(len(self.consulta), 1)
+        self.assertGreater(len(self.consulta), 0)
 
     def testDarCancionPorId(self):
         self.consulta = self.coleccion.darCancionPorId(1)
