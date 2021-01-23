@@ -1,6 +1,6 @@
 
 from PyQt5.QtWidgets import QScrollArea, QDialog, QWidget, QPushButton, QHBoxLayout, QGroupBox, QGridLayout, QLabel, QLineEdit, QVBoxLayout
-from PyQt5.QtGui import QFont
+from PyQt5.QtGui import QFont, QPixmap
 from PyQt5 import QtCore
 
 class Ventana_Lista_Canciones(QWidget):
@@ -19,7 +19,7 @@ class Ventana_Lista_Canciones(QWidget):
         self.left = 80
         self.top = 80
         self.width = 550
-        self.height = 300
+        self.height = 475
         #Inicializamos la ventana principal
         self.inicializar_ventana()
 
@@ -43,6 +43,16 @@ class Ventana_Lista_Canciones(QWidget):
         self.lista_canciones.setWidgetResizable(True)
         layout_canciones = QGridLayout()
         self.caja_canciones.setLayout(layout_canciones)
+
+        #Creación del logo
+
+        logo=QLabel(self)
+        pixmap = QPixmap("src/recursos/Banner.png") 
+        pixmap = pixmap.scaledToWidth(self.width)       
+        logo.setPixmap(pixmap)
+        logo.setAlignment(QtCore.Qt.AlignCenter)
+
+        self.distr_album.addWidget(logo)
 
         #Creación de los títulos
 

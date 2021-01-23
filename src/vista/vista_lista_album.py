@@ -1,5 +1,5 @@
 from PyQt5.QtWidgets import QScrollArea, QDialog, QComboBox, QWidget, QPushButton, QHBoxLayout, QGroupBox, QGridLayout, QLabel, QLineEdit, QVBoxLayout
-from PyQt5.QtGui import QFont
+from PyQt5.QtGui import QFont, QPixmap
 from PyQt5 import QtCore
 
 class Ventana_Lista_Album(QWidget):
@@ -17,7 +17,7 @@ class Ventana_Lista_Album(QWidget):
         self.title = 'Mi música - albums'
         self.left = 80
         self.top = 80
-        self.width = 500
+        self.width = 550
         self.height = 450
         #Inicializamos la ventana principal
         self.inicializar_ventana()
@@ -28,6 +28,12 @@ class Ventana_Lista_Album(QWidget):
         '''
         self.setWindowTitle(self.title)
         self.setFixedSize(self.width, self.height)
+
+        logo=QLabel(self)
+        pixmap = QPixmap("src/recursos/Banner.png") 
+        pixmap = pixmap.scaledToWidth(self.width)       
+        logo.setPixmap(pixmap)
+        logo.setAlignment(QtCore.Qt.AlignCenter)
 
         #Creación de los distribuidores
 
@@ -72,7 +78,7 @@ class Ventana_Lista_Album(QWidget):
         layout_botones.addWidget(self.boton_canciones)
 
         #Se añaden los elementos organizadores al distribuidor
-
+        self.distr_lista_canciones.addWidget(logo)
         self.distr_lista_canciones.addWidget(self.lista_albums)
         self.distr_lista_canciones.addWidget(self.caja_botones)
     
