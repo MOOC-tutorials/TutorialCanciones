@@ -4,8 +4,14 @@ from PyQt5.QtGui import QFont
 from PyQt5 import QtCore
 
 class Ventana_Lista_Canciones(QWidget):
+    '''
+    Clase de la ventana con la lista de las canciones
+    '''
 
     def __init__(self, app):
+        '''
+        Constructor de la ventana
+        '''
         super().__init__()
         self.interfaz = app
         #Se establecen las características de la ventana
@@ -18,6 +24,9 @@ class Ventana_Lista_Canciones(QWidget):
         self.inicializar_ventana()
 
     def inicializar_ventana(self):
+        '''
+        Método para inicializar los componentes gráficos
+        '''
         
         self.setWindowTitle(self.title)
         self.setFixedSize(self.width, self.height)
@@ -25,11 +34,17 @@ class Ventana_Lista_Canciones(QWidget):
         self.distr_album = QVBoxLayout()
         self.setLayout(self.distr_album)
 
-        self.caja_canciones = QScrollArea()
-        self.caja_canciones.setFixedHeight(225)
-        self.caja_canciones.setWidgetResizable(True)
+        #Area con barra de desplazamiento
+
+        self.lista_canciones = QScrollArea()
+        self.caja_canciones = QWidget()
+        self.lista_canciones.setWidget(self.caja_canciones)
+        self.lista_canciones.setFixedHeight(225)
+        self.lista_canciones.setWidgetResizable(True)
         layout_canciones = QGridLayout()
         self.caja_canciones.setLayout(layout_canciones)
+
+        #Creación de los títulos
 
         self.titulos = ["Título de la canción", "Compositor", "Duración", "Acciones"]
         for i in range(len(self.titulos)):
@@ -38,33 +53,33 @@ class Ventana_Lista_Canciones(QWidget):
             etiqueta.setAlignment(QtCore.Qt.AlignCenter)
             layout_canciones.addWidget(etiqueta,0,i,  QtCore.Qt.AlignTop | QtCore.Qt.AlignCenter)
 
+        #Creación de los botones
+
         self.boton_buscar = QPushButton("Buscar")
-        self.boton_buscar.clicked.connect(self.buscar)
+        self.boton_buscar.clicked.connect(self.mostrar_ventana_buscar)
 
         self.boton_nuevo = QPushButton("Nuevo")
-        #self.boton_nuevo.clicked.connect(self.mostrar_dialogo_nueva_cancion)
         self.boton_nuevo.clicked.connect(self.agregar_nueva_cancion)
 
         self.boton_albumes = QPushButton("Ver Álbumes")
-        self.boton_albumes.clicked.connect(self.ver_albumes)
+        self.boton_albumes.clicked.connect(self.mostrar_ventana_lista_albums)
 
-        self.distr_album.addWidget(self.caja_canciones)
+        self.distr_album.addWidget(self.lista_canciones)
 
         self.widget_botones = QWidget()
         self.widget_botones.setLayout(QHBoxLayout())
         self.distr_album.addWidget(self.widget_botones)
 
+        #Se añaden los botones al distribuidor
+
         self.widget_botones.layout().addWidget(self.boton_buscar)
         self.widget_botones.layout().addWidget(self.boton_nuevo)
         self.widget_botones.layout().addWidget(self.boton_albumes)
 
-    def crear_campo_texto(self, texto, edit=True):
-        campo = QLineEdit(texto)
-        if not edit:
-            campo.setReadOnly(True)
-        return campo
-
     def limpiar_canciones(self):
+        '''
+        Método para limpiar las canciones del área
+        '''
         while self.caja_canciones.layout().count()>len(self.titulos):
             child = self.caja_canciones.layout().takeAt(len(self.titulos))
             if child.widget():
@@ -73,6 +88,9 @@ class Ventana_Lista_Canciones(QWidget):
 
 
     def mostrar_canciones(self, canciones):
+        '''
+        Método para mostrar la información de las canciones
+        '''
         self.limpiar_canciones()
         self.botones = []
         i = 1
@@ -95,7 +113,7 @@ class Ventana_Lista_Canciones(QWidget):
 
             boton_borrar = QPushButton("Borrar")
             boton_borrar.setFixedSize(50, 25)
-            boton_borrar.clicked.connect(lambda estado, x=cancion["id"]: self.borrar_cancion(x))
+            boton_borrar.clicked.connect(lambda estado, x=cancion["id"]: self.eliminar_cancion(x))
 
             widget_botones = QWidget()
             widget_botones.setLayout(QGridLayout())
@@ -107,72 +125,40 @@ class Ventana_Lista_Canciones(QWidget):
 
             self.caja_canciones.layout().addWidget(widget_botones, i,3, QtCore.Qt.AlignTop | QtCore.Qt.AlignCenter)
             i+=1
-
+        #Esta instrucción permite compactar los resultados
         self.caja_canciones.layout().setRowStretch(i, 1)
 
     
     def ver_cancion(self, id_cancion):
-        self.interfaz.mostrar_ventana_cancion(id_cancion)
+        '''
+        Método para mostrar una canción en particular
+        '''
+        self.interfaz.mostrar_ventana_cancion(id_cancion=id_cancion)
         self.hide()
 
-    def borrar_cancion(self, id_cancion):
+    def eliminar_cancion(self, id_cancion):
+        '''
+        Método para eliminar una canción
+        '''
         self.interfaz.eliminar_cancion(id_cancion)
 
     def agregar_nueva_cancion(self):
+        '''
+        Método para crear una nueva canción
+        '''
         self.hide()
-        self.interfaz.mostrar_ventana_cancion(nueva=True)
+        self.interfaz.mostrar_ventana_cancion(nueva=True)         
 
-    def mostrar_dialogo_nueva_cancion(self):
-            self.dialogo_nueva_cancion = QDialog(self)
-            
-            layout = QGridLayout()
-            self.dialogo_nueva_cancion.setLayout(layout)
-
-            lab1 = QLabel("Título")
-            txt1 = QLineEdit()
-            layout.addWidget(lab1,0,0)
-            layout.addWidget(txt1,0,1,1,3)
-
-            lab2 = QLabel("Duración")
-            txt2_1 = QLineEdit(maxLength=2)
-            txt2_2 = QLineEdit(maxLength=2)
-            layout.addWidget(lab2,1,0)
-            layout.addWidget(txt2_1,1,1)
-            layout.addWidget(QLabel(":"), 1,2)
-            layout.addWidget(txt2_2,1,3)
-
-            lab3 = QLabel("Compositor")
-            txt3 = QLineEdit()
-            layout.addWidget(lab3,2,0)
-            layout.addWidget(txt3,2,1,1,3)
-
-            butAceptar = QPushButton("Aceptar")
-            butCancelar = QPushButton("Cancelar")
-            
-            layout.addWidget(butAceptar,4,0)
-            layout.addWidget(butCancelar,4,1)
-            
-            butAceptar.clicked.connect(lambda: self.crear_cancion( {"Titulo":txt1.text(),"Interpretes":"", "Minutos":txt2_1.text(),"Segundos":txt2_2.text(),"Compositor":txt3.text()}))
-            butCancelar.clicked.connect(lambda: self.dialogo_nueva_cancion.close())
-
-            self.dialogo_nueva_cancion.setWindowTitle("Añadir nueva canción")
-            self.dialogo_nueva_cancion.exec_()
-            self.dialogo_nueva_cancion.close()
-
-    def crear_cancion(self, dict_cancion):
-        self.dialogo_nueva_cancion.close()
-        self.interfaz.crear_cancion(dict_cancion)
-        
-        
-
-    def ver_interpretes(self):
-        self.hide()
-        self.interfaz.mostrar_ventana_lista_interpretes()   
-
-    def ver_albumes(self):
+    def mostrar_ventana_lista_albums(self):
+        '''
+        Método para mostrar la ventana con la lista de albumes
+        '''
         self.hide()
         self.interfaz.mostrar_ventana_lista_albums()   
 
-    def buscar(self):
+    def mostrar_ventana_buscar(self):
+        '''
+        Método para mostrar la ventana de búsquedas
+        '''
         self.hide()
         self.interfaz.mostrar_ventana_buscar()

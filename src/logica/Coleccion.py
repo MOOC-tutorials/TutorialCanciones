@@ -165,21 +165,27 @@ class Coleccion():
         except:
             return False
 
-    def editarCancion(self, cancion_id, titulo, minutos, segundos, compositor, interpretes_id):
+    def editarCancion(self, cancion_id, titulo, minutos, segundos, compositor, interpretes):
         try:
             cancion = session.query(Cancion).filter(Cancion.id == cancion_id).first()
             cancion.titulo = titulo
             cancion.minutos = minutos
             cancion.segundos = segundos
             cancion.compositor = compositor
-            interpretesCancion = []
-            for item in interpretes_id:
-                interprete = session.query(Interprete).filter(Interprete.id == item).first()
-                interpretesCancion.append(interprete)
-            cancion.interpretes = interpretesCancion
+            for item in interpretes:
+                int_id = item.get("id","n") 
+                if int_id == "n":
+                    interprete = Interprete(nombre=item["nombre"], texto_curiosidades=item["texto_curiosidades"], cancion=cancion.id)
+                    session.add(interprete)
+                    cancion.interpretes.append(interprete)         
+                else:
+                    self.editarInterprete(item["id"], item["nombre"], item["texto_curiosidades"])             
+            
             session.commit()
             return True
-        except:
+        except Exception as e:
+            print("===")
+            print(e)
             return False
 
     def editarInterprete(self, interprete_id, nombre, texto_curiosidades):

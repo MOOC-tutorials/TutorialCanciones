@@ -3,10 +3,16 @@ from PyQt5.QtGui import QFont
 from PyQt5 import QtCore
 
 class Ventana_Lista_Album(QWidget):
+    '''
+    Clase con la lista de albums
+    '''
 
-    def __init__(self, app):
+    def __init__(self, interfaz):
+        '''
+        Constructor de la ventana
+        '''
         super().__init__()
-        self.interfaz = app
+        self.interfaz = interfaz
         #Se establecen las características de la ventana
         self.title = 'Mi música - albums'
         self.left = 80
@@ -17,8 +23,13 @@ class Ventana_Lista_Album(QWidget):
         self.inicializar_ventana()
 
     def inicializar_ventana(self):
+        '''
+        Método para inicializar los elementos gráficos
+        '''
         self.setWindowTitle(self.title)
         self.setFixedSize(self.width, self.height)
+
+        #Creación de los distribuidores
 
         self.distr_lista_canciones = QVBoxLayout()
         self.setLayout(self.distr_lista_canciones)
@@ -29,6 +40,8 @@ class Ventana_Lista_Album(QWidget):
         self.caja_albums.setLayout(QGridLayout())
         self.lista_albums.setWidget(self.caja_albums)
 
+        #Creación de los títulos
+
         self.titulos = ["Titulo del album", "Intérpretes", "Medio", "Acciones"]
         
         for i in range(len(self.titulos)):
@@ -37,45 +50,62 @@ class Ventana_Lista_Album(QWidget):
             etiqueta_titulo.setAlignment(QtCore.Qt.AlignCenter)
             self.caja_albums.layout().addWidget(etiqueta_titulo,0,i, QtCore.Qt.AlignTop | QtCore.Qt.AlignCenter)
 
-
         self.caja_botones = QGroupBox()
         layout_botones = QHBoxLayout()
         self.caja_botones.setLayout(layout_botones)
 
+        #Creación de los botones
 
         self.boton_buscar = QPushButton("Buscar")
-        self.boton_buscar.clicked.connect(self.buscar)
+        self.boton_buscar.clicked.connect(self.mostrar_ventana_buscar)
 
         self.boton_nuevo = QPushButton("Nuevo")
-        self.boton_nuevo.clicked.connect(self.nuevo_album)
+        self.boton_nuevo.clicked.connect(self.mostrar_dialogo_nuevo_album)
 
         self.boton_canciones = QPushButton("Ver Canciones")
-        self.boton_canciones.clicked.connect(self.ver_canciones)
+        self.boton_canciones.clicked.connect(self.mostrar_ventana_lista_canciones)
 
+        #Se agregan los botones
 
         layout_botones.addWidget(self.boton_buscar)
         layout_botones.addWidget(self.boton_nuevo)
         layout_botones.addWidget(self.boton_canciones)
 
+        #Se añaden los elementos organizadores al distribuidor
+
         self.distr_lista_canciones.addWidget(self.lista_albums)
         self.distr_lista_canciones.addWidget(self.caja_botones)
     
+
+    def limpiar_albums(self):
+        '''
+        Método para limpiar los álbumes (salvo los títulos)
+        '''
+        while self.caja_albums.layout().count() > len(self.titulos) :
+            child = self.caja_albums.layout().takeAt(len(self.titulos))
+            if child.widget():
+                child.widget().deleteLater()
+
     def mostrar_albums(self, albumes):
+        '''
+        Método para mostrar todos los albums en el área de resultados
+        '''
         self.limpiar_albums()
 
-        i = 1
+        fila = 1
         for album in albumes:
+            #Se añaden las filas con los resultados
             texto_titulo = QLineEdit(album["titulo"])
             texto_titulo.setReadOnly(True)
-            self.caja_albums.layout().addWidget(texto_titulo,i,0, QtCore.Qt.AlignTop | QtCore.Qt.AlignCenter)
+            self.caja_albums.layout().addWidget(texto_titulo,fila,0, QtCore.Qt.AlignTop | QtCore.Qt.AlignCenter)
 
             texto_interpretes = QLineEdit(";".join(album.get("interpretes",[])))
             texto_interpretes.setReadOnly(True)
-            self.caja_albums.layout().addWidget(texto_interpretes,i,1, QtCore.Qt.AlignTop | QtCore.Qt.AlignCenter)
+            self.caja_albums.layout().addWidget(texto_interpretes,fila,1, QtCore.Qt.AlignTop | QtCore.Qt.AlignCenter)
 
             texto_medio = QLineEdit(album["medio"].name)
             texto_medio.setReadOnly(True)
-            self.caja_albums.layout().addWidget(texto_medio,i,2, QtCore.Qt.AlignTop | QtCore.Qt.AlignCenter)
+            self.caja_albums.layout().addWidget(texto_medio,fila,2, QtCore.Qt.AlignTop | QtCore.Qt.AlignCenter)
             
             widget_botones = QWidget()
             widget_botones.setLayout(QGridLayout())
@@ -92,25 +122,30 @@ class Ventana_Lista_Album(QWidget):
 
             widget_botones.layout().setContentsMargins(0,0,0,0)
 
-            self.caja_albums.layout().addWidget(widget_botones, i, 3, QtCore.Qt.AlignTop | QtCore.Qt.AlignCenter)
-            i+=1
-        self.caja_albums.layout().setRowStretch(i, 1)
+            self.caja_albums.layout().addWidget(widget_botones, fila, 3, QtCore.Qt.AlignTop | QtCore.Qt.AlignCenter)
+            fila+=1
 
-    def limpiar_albums(self):
-        while self.caja_albums.layout().count() > len(self.titulos) :
-            child = self.caja_albums.layout().takeAt(len(self.titulos))
-            if child.widget():
-                child.widget().deleteLater()
+        #Con esto se compacta la lista
+        self.caja_albums.layout().setRowStretch(fila, 1)
 
-    def ver_album(self, n_album):
+    def ver_album(self, id_album):
+        '''
+        Método para ver a un álbum específico
+        '''
         self.hide()
-        self.interfaz.mostrar_ventana_album(n_album)
+        self.interfaz.mostrar_ventana_album(id_album)
     
-    def buscar(self):
+    def mostrar_ventana_buscar(self):
+        '''
+        Método para ir a la ventana de búsquedas
+        '''
         self.hide()
         self.interfaz.mostrar_ventana_buscar()
 
-    def nuevo_album(self, nuevo_album):
+    def mostrar_dialogo_nuevo_album(self, nuevo_album):
+        '''
+        Método para desplegar el diálogo para añadir un nuevo album
+        '''
         self.dialogo_nuevo_album = QDialog(self)
         
         layout = QGridLayout()
@@ -150,10 +185,16 @@ class Ventana_Lista_Album(QWidget):
         self.dialogo_nuevo_album.exec_()
 
     def crear_album(self, nuevo_album):
+        '''
+        Método para crear un nuevo album
+        '''
         self.interfaz.crear_album(nuevo_album)
         self.dialogo_nuevo_album.close()
 
-    def ver_canciones(self):
+    def mostrar_ventana_lista_canciones(self):
+        '''
+        Método para ir a la lista de canciones
+        '''
         self.hide()
         self.interfaz.mostrar_ventana_lista_canciones()   
 
