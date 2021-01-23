@@ -182,7 +182,9 @@ class Coleccion():
             cancion.interpretes = interpretesCancion
             session.commit()
             return True
-        except:
+        except Exception as e:
+            print("===")
+            print(e)
             return False
 
     def editarInterprete(self, interprete_id, nombre, texto_curiosidades):
