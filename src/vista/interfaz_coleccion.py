@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QApplication
+from PyQt5.QtWidgets import QApplication, QMessageBox
 from src.vista.vista_album import Ventana_Album
 from src.vista.vista_busqueda import Ventana_Inicial
 from src.vista.vista_cancion import Ventana_Cancion
@@ -16,18 +16,18 @@ class App(QApplication):
         Constructor de la interfaz
         '''
         super(App, self).__init__(sys_argv)
-        
-        #Lógica de la aplicación
+
+        # Lógica de la aplicación
         self.logica = logica
 
-        #Se inicializan todas las ventanas
+        # Se inicializan todas las ventanas
         self.ventana_buscar = Ventana_Inicial(self)
         self.ventana_lista_album = Ventana_Lista_Album(self)
         self.ventana_album = Ventana_Album(self)
         self.ventana_lista_canciones = Ventana_Lista_Canciones(self)
         self.ventana_cancion = Ventana_Cancion(self)
 
-        #Se comienza en la lista de albums
+        # Se comienza en la lista de albums
         self.mostrar_ventana_lista_albums()
 
     def mostrar_ventana_lista_albums(self):
@@ -61,7 +61,8 @@ class App(QApplication):
         '''
         self.ventana_cancion.id_album = id_album
         if not nueva:
-            cancion = self.logica.darCancionPorId(self.ventana_cancion.cancion_actual["id"] if id_cancion==-1 else id_cancion)
+            cancion = self.logica.darCancionPorId(
+                self.ventana_cancion.cancion_actual["id"] if id_cancion == -1 else id_cancion)
             self.ventana_cancion.mostrar_cancion(cancion)
             self.ventana_cancion.mostrar_interpretes(cancion["interpretes"])
         else:
@@ -78,13 +79,15 @@ class App(QApplication):
         '''
         Método para guardar un album
         '''
-        self.logica.editarAlbum(n_album, nuevo_album["titulo"], nuevo_album["ano"], nuevo_album["descripcion"], nuevo_album["medio"])
+        self.logica.editarAlbum(n_album, nuevo_album["titulo"], nuevo_album["ano"], nuevo_album["descripcion"],
+                                nuevo_album["medio"])
 
     def guardar_cancion(self, nueva_cancion, interpretes):
         '''
         Método para editar una canción
         '''
-        res = self.logica.editarCancion(nueva_cancion["id"], nueva_cancion["titulo"], nueva_cancion["minutos"], nueva_cancion["segundos"], nueva_cancion["compositor"], interpretes)
+        res = self.logica.editarCancion(nueva_cancion["id"], nueva_cancion["titulo"], nueva_cancion["minutos"],
+                                        nueva_cancion["segundos"], nueva_cancion["compositor"], interpretes)
 
     def eliminar_album(self, id_album):
         '''
@@ -111,9 +114,16 @@ class App(QApplication):
         '''
         Método para crear un album
         '''
-        self.logica.agregarAlbum(nuevo_album["titulo"], nuevo_album["ano"], nuevo_album["descripcion"], nuevo_album["medio"])
+        crear_album = self.logica.agregarAlbum(nuevo_album["titulo"], nuevo_album["ano"], nuevo_album["descripcion"],
+                                               nuevo_album["medio"])
+        if crear_album is False:
+            mensaje_error = QMessageBox()
+            mensaje_error.setIcon(QMessageBox.Critical)
+            mensaje_error.setWindowTitle("Error al guardar álbum")
+            mensaje_error.setText("Ya existe un album con el título " + nuevo_album["titulo"])
+            mensaje_error.setStandardButtons(QMessageBox.Ok)
+            mensaje_error.exec_()
         self.ventana_lista_album.mostrar_albums(self.logica.darAlbumes())
-
 
     def crear_cancion(self, nueva_cancion, interpretes, id_album=-1):
         '''
@@ -121,9 +131,11 @@ class App(QApplication):
         El parámetro id_album indica si la canción está o no asociada a un album
         '''
         if id_album == -1:
-            self.logica.agregarCancion(nueva_cancion["titulo"],nueva_cancion["minutos"], nueva_cancion["segundos"], nueva_cancion["compositor"], id_album, interpretes)
+            self.logica.agregarCancion(nueva_cancion["titulo"], nueva_cancion["minutos"], nueva_cancion["segundos"],
+                                       nueva_cancion["compositor"], id_album, interpretes)
         else:
-            self.logica.agregarCancion(nueva_cancion["titulo"],nueva_cancion["minutos"], nueva_cancion["segundos"], nueva_cancion["compositor"], id_album, interpretes)
+            self.logica.agregarCancion(nueva_cancion["titulo"], nueva_cancion["minutos"], nueva_cancion["segundos"],
+                                       nueva_cancion["compositor"], id_album, interpretes)
 
     def mostrar_resultados_albumes(self, nombre_album):
         '''
@@ -146,7 +158,7 @@ class App(QApplication):
         interpretes = self.logica.buscarInterpretesPorNombre(nombre_interprete)
         self.ventana_buscar.mostrar_resultados_interpretes(interpretes)
 
-    def agregar_interprete(self,  id_cancion, nombre, texto_curiosidades):
+    def agregar_interprete(self, id_cancion, nombre, texto_curiosidades):
         '''
         Método para agregar un nuevo intérprete en una canción
         '''
@@ -166,7 +178,7 @@ class App(QApplication):
         Método para dar todas las canciones
         '''
         return self.logica.darCanciones()
-    
+
     def dar_medios(self):
         '''
         Método para obtener los valores de la enumeración medios del mundo
