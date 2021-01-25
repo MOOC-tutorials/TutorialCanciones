@@ -196,7 +196,7 @@ class Ventana_Album(QWidget):
         if album_modificado['titulo'] == '' or album_modificado['ano'] == '' or album_modificado['descripcion'] == '':
             mensaje_error = QMessageBox()
             mensaje_error.setIcon(QMessageBox.Critical)
-            mensaje_error.setWindowTitle("Error al guardar álbum")
+            mensaje_error.setWindowTitle("Error al guardar los cambios")
             mensaje_error.setText("Ningún campo debe estar vacio")
             mensaje_error.setStandardButtons(QMessageBox.Ok)
             mensaje_error.exec_()

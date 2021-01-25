@@ -85,7 +85,7 @@ class App(QApplication):
         if guardar_album is False:
             mensaje_error = QMessageBox()
             mensaje_error.setIcon(QMessageBox.Critical)
-            mensaje_error.setWindowTitle("Error al guardar álbum")
+            mensaje_error.setWindowTitle("Error al guardar los cambios")
             mensaje_error.setText("Ya existe un album con el título " + nuevo_album["titulo"])
             mensaje_error.setStandardButtons(QMessageBox.Ok)
             mensaje_error.exec_()
@@ -158,6 +158,13 @@ class App(QApplication):
         Método para mostrar los resultados de búsqueda de albumes por nombre
         '''
         albumes = self.logica.buscarAlbumesPorTitulo(nombre_album)
+        if len(albumes) == 0:
+            mensaje_error = QMessageBox()
+            mensaje_error.setIcon(QMessageBox.Critical)
+            mensaje_error.setWindowTitle("Error al buscar álbum")
+            mensaje_error.setText("No hay álbumes con el título " + nombre_album)
+            mensaje_error.setStandardButtons(QMessageBox.Ok)
+            mensaje_error.exec_()
         self.ventana_buscar.mostrar_resultados_albumes(albumes)
 
     def mostrar_resultados_canciones(self, nombre_cancion):
