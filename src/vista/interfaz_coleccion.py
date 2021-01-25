@@ -79,8 +79,17 @@ class App(QApplication):
         '''
         Método para guardar un album
         '''
-        self.logica.editarAlbum(n_album, nuevo_album["titulo"], nuevo_album["ano"], nuevo_album["descripcion"],
-                                nuevo_album["medio"])
+        guardar_album = self.logica.editarAlbum(n_album, nuevo_album["titulo"], nuevo_album["ano"],
+                                                nuevo_album["descripcion"],
+                                                nuevo_album["medio"])
+        if guardar_album is False:
+            mensaje_error = QMessageBox()
+            mensaje_error.setIcon(QMessageBox.Critical)
+            mensaje_error.setWindowTitle("Error al guardar álbum")
+            mensaje_error.setText("Ya existe un album con el título " + nuevo_album["titulo"])
+            mensaje_error.setStandardButtons(QMessageBox.Ok)
+            mensaje_error.exec_()
+
 
     def guardar_cancion(self, nueva_cancion, interpretes):
         '''

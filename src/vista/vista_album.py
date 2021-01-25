@@ -1,4 +1,5 @@
-from PyQt5.QtWidgets import QScrollArea, QDialog, QWidget, QPushButton, QHBoxLayout, QGroupBox, QGridLayout, QLabel, QLineEdit, QVBoxLayout, QComboBox
+from PyQt5.QtWidgets import QScrollArea, QDialog, QWidget, QPushButton, QHBoxLayout, QGroupBox, QGridLayout, QLabel, \
+    QLineEdit, QVBoxLayout, QComboBox, QMessageBox
 from PyQt5.QtGui import QFont, QPixmap
 from PyQt5 import QtCore
 
@@ -191,7 +192,16 @@ class Ventana_Album(QWidget):
         Método para guardar los datos del album
         '''
         album_modificado = {"titulo":self.texto_album.text(),"interpretes":self.texto_descripcion.text(), "medio":self.lista_medios.currentText(),"ano":self.texto_anio.text(),"descripcion":self.texto_descripcion.text()}
-        self.interfaz.guardar_album(self.album_actual["id"], album_modificado)
+        # Si hay campos vacios, se lanza un mensaje de error.
+        if album_modificado['titulo'] == '' or album_modificado['ano'] == '' or album_modificado['descripcion'] == '':
+            mensaje_error = QMessageBox()
+            mensaje_error.setIcon(QMessageBox.Critical)
+            mensaje_error.setWindowTitle("Error al guardar álbum")
+            mensaje_error.setText("Ningún campo debe estar vacio")
+            mensaje_error.setStandardButtons(QMessageBox.Ok)
+            mensaje_error.exec_()
+        else:
+            self.interfaz.guardar_album(self.album_actual["id"], album_modificado)
 
     def eliminar_album(self):
         '''

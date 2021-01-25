@@ -155,19 +155,16 @@ class Coleccion():
             return False
 
     def editarAlbum(self, album_id, titulo, anio, descripcion, medio):
-        try:
+        busqueda = session.query(Album).filter(Album.titulo == titulo, Album.id != album_id).all()
+        if len(busqueda) == 0:
             album = session.query(Album).filter(Album.id == album_id).first()
-            if titulo:
-                album.titulo = titulo
-            if anio:
-                album.ano = anio
-            if descripcion:
-                album.descripcion = descripcion
-            if medio:
-                album.medio = medio
+            album.titulo = titulo
+            album.ano = anio
+            album.descripcion = descripcion
+            album.medio = medio
             session.commit()
             return True
-        except:
+        else:
             return False
 
     def editarCancion(self, cancion_id, titulo, minutos, segundos, compositor, interpretes):
