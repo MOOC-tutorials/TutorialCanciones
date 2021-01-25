@@ -102,8 +102,15 @@ class App(QApplication):
         '''
         Método para eliminar un album
         '''
-        self.logica.eliminarAlbum(id_album)
+        dialogo_confirmacion = QMessageBox()
+        dialogo_confirmacion.setIcon(QMessageBox.Question)
+        dialogo_confirmacion.setText("¿Está seguro que desea borrar el álbum?")
+        dialogo_confirmacion.setWindowTitle("Confirmación")
+        dialogo_confirmacion.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
+        if dialogo_confirmacion.exec_() == QMessageBox.Yes:
+            self.logica.eliminarAlbum(id_album)
         self.ventana_lista_album.mostrar_albums(self.logica.darAlbumes())
+
 
     def eliminar_cancion(self, id_cancion):
         '''
