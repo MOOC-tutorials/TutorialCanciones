@@ -87,7 +87,6 @@ class Coleccion():
                 album = session.query(Album).filter(Album.id == album_id).first()
                 nuevaCancion = Cancion(titulo=titulo, minutos=minutos, segundos=segundos, compositor=compositor,
                                        albumes=[album])
-                session.add(nuevaCancion)
                 for item in interpretes:
                     interprete = Interprete(nombre=item["nombre"], texto_curiosidades=item["texto_curiosidades"],
                                             cancion=nuevaCancion.id)
@@ -168,7 +167,8 @@ class Coleccion():
             return False
 
     def editarCancion(self, cancion_id, titulo, minutos, segundos, compositor, interpretes):
-        try:
+        busqueda = session.query(Cancion).filter(Cancion.titulo == titulo, Cancion.id != cancion_id).all()
+        if len(busqueda) == 0:
             cancion = session.query(Cancion).filter(Cancion.id == cancion_id).first()
             cancion.titulo = titulo
             cancion.minutos = minutos
@@ -184,9 +184,7 @@ class Coleccion():
                     self.editarInterprete(item["id"], item["nombre"], item["texto_curiosidades"])
             session.commit()
             return True
-        except Exception as e:
-            print("===")
-            print(e)
+        else:
             return False
 
     def editarInterprete(self, interprete_id, nombre, texto_curiosidades):

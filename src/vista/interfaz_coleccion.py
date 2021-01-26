@@ -146,12 +146,35 @@ class App(QApplication):
         Método para crear una nueva canción. 
         El parámetro id_album indica si la canción está o no asociada a un album
         '''
-        if id_album == -1:
-            self.logica.agregarCancion(nueva_cancion["titulo"], nueva_cancion["minutos"], nueva_cancion["segundos"],
-                                       nueva_cancion["compositor"], id_album, interpretes)
+        if nueva_cancion["titulo"] == "" or nueva_cancion["minutos"] == "" or nueva_cancion["segundos"] == "":
+            mensaje_error = QMessageBox()
+            mensaje_error.setIcon(QMessageBox.Critical)
+            mensaje_error.setWindowTitle("Error al guardar canción")
+            mensaje_error.setText("Ningún campo debe estar vacio")
+            mensaje_error.setStandardButtons(QMessageBox.Ok)
+            mensaje_error.exec_()
         else:
-            self.logica.agregarCancion(nueva_cancion["titulo"], nueva_cancion["minutos"], nueva_cancion["segundos"],
-                                       nueva_cancion["compositor"], id_album, interpretes)
+            if int(nueva_cancion["minutos"]) == 0 and int(nueva_cancion["segundos"]) < 10:
+                mensaje_error = QMessageBox()
+                mensaje_error.setIcon(QMessageBox.Critical)
+                mensaje_error.setWindowTitle("Error al guardar canción")
+                mensaje_error.setText("La duración de la canción debe ser mínimo de 10 sg")
+                mensaje_error.setStandardButtons(QMessageBox.Ok)
+                mensaje_error.exec_()
+            else:
+                if id_album == -1:
+                    self.logica.agregarCancion(nueva_cancion["titulo"], nueva_cancion["minutos"], nueva_cancion["segundos"],
+                                               nueva_cancion["compositor"], id_album, interpretes)
+                else:
+                    operacion = self.logica.agregarCancion(nueva_cancion["titulo"], nueva_cancion["minutos"], nueva_cancion["segundos"],
+                                               nueva_cancion["compositor"], id_album, interpretes)
+                    if operacion is False:
+                        mensaje_error = QMessageBox()
+                        mensaje_error.setIcon(QMessageBox.Critical)
+                        mensaje_error.setWindowTitle("Error al guardar canción")
+                        mensaje_error.setText("Ya existe una canción con el título " + nueva_cancion["titulo"] + " en el álbum")
+                        mensaje_error.setStandardButtons(QMessageBox.Ok)
+                        mensaje_error.exec_()
 
     def mostrar_resultados_albumes(self, nombre_album):
         '''

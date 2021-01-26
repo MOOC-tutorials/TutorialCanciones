@@ -194,14 +194,6 @@ class Ventana_Cancion(QWidget):
             mensaje_error.setStandardButtons(QMessageBox.Ok)
             mensaje_error.exec_()
         else:
-            mensaje_error = QMessageBox()
-            mensaje_error.setIcon(QMessageBox.Information)
-            mensaje_error.setWindowTitle("Cambios exitosos")
-            mensaje_error.setText("Los cambios fueron guardados correctamente")
-            mensaje_error.setStandardButtons(QMessageBox.Ok)
-            mensaje_error.exec_()
-
-
             if self.cancion_actual == None:
                 #Si no hay una canción actual definida, la canción es nueva y se debe crear en la lógica
                 self.interfaz.crear_cancion({"titulo":self.texto_cancion.text(),"minutos":self.texto_minutos.text(), "segundos":self.texto_segundos.text(), "compositor":self.texto_compositor.text()}, self.interpretes, id_album=self.id_album)
