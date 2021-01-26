@@ -116,8 +116,14 @@ class App(QApplication):
         '''
         Método para eliminar una canción
         '''
-        self.ventana_cancion.hide()
-        self.logica.eliminarCancion(id_cancion)
+        dialogo_confirmacion = QMessageBox()
+        dialogo_confirmacion.setIcon(QMessageBox.Question)
+        dialogo_confirmacion.setText("¿Está seguro que desea borrar la canción?")
+        dialogo_confirmacion.setWindowTitle("Confirmación")
+        dialogo_confirmacion.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
+        if dialogo_confirmacion.exec_() == QMessageBox.Yes:
+            self.ventana_cancion.hide()
+            self.logica.eliminarCancion(id_cancion)
         self.ventana_lista_canciones.mostrar_canciones(self.logica.darCanciones())
 
     def eliminar_interprete(self, id_interprete):
@@ -195,6 +201,13 @@ class App(QApplication):
         Método para mostrar los resultados de búsqueda de canciones por nombre
         '''
         canciones = self.logica.buscarCancionesPorTitulo(nombre_cancion)
+        if len(canciones) == 0:
+            mensaje_error = QMessageBox()
+            mensaje_error.setIcon(QMessageBox.Critical)
+            mensaje_error.setWindowTitle("Error al buscar álbum")
+            mensaje_error.setText("No hay canciones con el título " + nombre_cancion)
+            mensaje_error.setStandardButtons(QMessageBox.Ok)
+            mensaje_error.exec_()
         self.ventana_buscar.mostrar_resultados_canciones(canciones)
 
     def mostrar_resultados_interpretes(self, nombre_interprete):
@@ -202,6 +215,13 @@ class App(QApplication):
         Método para mostrar los resultados de búsqueda de intérpretes por nombre
         '''
         interpretes = self.logica.buscarInterpretesPorNombre(nombre_interprete)
+        if len(interpretes) == 0:
+            mensaje_error = QMessageBox()
+            mensaje_error.setIcon(QMessageBox.Critical)
+            mensaje_error.setWindowTitle("Error al buscar álbum")
+            mensaje_error.setText("No hay canciones con el interprete " + nombre_interprete)
+            mensaje_error.setStandardButtons(QMessageBox.Ok)
+            mensaje_error.exec_()
         self.ventana_buscar.mostrar_resultados_interpretes(interpretes)
 
     def agregar_interprete(self, id_cancion, nombre, texto_curiosidades):
