@@ -234,8 +234,14 @@ class Ventana_Cancion(QWidget):
         '''
         Método para eliminar intérpretes de la ventana
         '''
-        self.interpretes_a_eliminar.append(self.interpretes[n_interprete]["id"])
-        self.interpretes.pop(n_interprete)
+        dialogo_confirmacion = QMessageBox()
+        dialogo_confirmacion.setIcon(QMessageBox.Question)
+        dialogo_confirmacion.setText("¿Está seguro que desea borrar el intérprete?")
+        dialogo_confirmacion.setWindowTitle("Confirmación")
+        dialogo_confirmacion.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
+        if dialogo_confirmacion.exec_() == QMessageBox.Yes:
+            self.interpretes_a_eliminar.append(self.interpretes[n_interprete]["id"])
+            self.interpretes.pop(n_interprete)
         self.mostrar_interpretes(self.interpretes)
         
     def mostrar_dialogo_crear_interprete(self, n_interprete=-1):
@@ -300,8 +306,16 @@ class Ventana_Cancion(QWidget):
         '''
         Método para agregar un intérprete en la ventana
         '''
-        self.interpretes.append({"id":"n", "nombre":nombre, "texto_curiosidades":texto_curiosidades})
-        self.mostrar_interpretes(self.interpretes)
+        if nombre == "" or texto_curiosidades == "":
+            mensaje_error = QMessageBox()
+            mensaje_error.setIcon(QMessageBox.Critical)
+            mensaje_error.setWindowTitle("Error al guardar intérprete")
+            mensaje_error.setText("Ningún campo debe estar vacio")
+            mensaje_error.setStandardButtons(QMessageBox.Ok)
+            mensaje_error.exec_()
+        else:
+            self.interpretes.append({"id":"n", "nombre":nombre, "texto_curiosidades":texto_curiosidades})
+            self.mostrar_interpretes(self.interpretes)
         self.dialogo_nuevo_interprete.close()
 
     def mostrar_lista_canciones(self):

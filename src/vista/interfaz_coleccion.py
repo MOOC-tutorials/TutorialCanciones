@@ -228,7 +228,7 @@ class App(QApplication):
         '''
         Método para agregar un nuevo intérprete en una canción
         '''
-        res = self.logica.agregarInterprete(nombre, texto_curiosidades, id_cancion)
+        self.logica.agregarInterprete(nombre, texto_curiosidades, id_cancion)
         self.ventana_cancion.mostrar_cancion(self.logica.darCancionPorId(id_cancion))
 
     def asociar_cancion(self, id_album, id_cancion):
